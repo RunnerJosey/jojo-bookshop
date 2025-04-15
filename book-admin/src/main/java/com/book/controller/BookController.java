@@ -4,7 +4,7 @@ package com.book.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.book.common.Result;
+import com.book.common.CommonResult;
 import com.book.entity.Book;
 import com.book.service.BookService;
 import org.springframework.web.bind.annotation.*;
@@ -13,7 +13,7 @@ import javax.annotation.Resource;
 import java.io.Serializable;
 import java.util.List;
 
-import static com.book.common.Result.success;
+import static com.book.common.CommonResult.success;
 
 /**
  * (Book)表控制层
@@ -38,7 +38,7 @@ public class BookController  {
      * @return 所有数据
      */
     @GetMapping
-    public Result selectAll(Page<Book> page, Book book) {
+    public CommonResult selectAll(Page<Book> page, Book book) {
         return success(this.bookService.page(page, new QueryWrapper<>(book)));
     }
 
@@ -49,7 +49,7 @@ public class BookController  {
      * @return 单条数据
      */
     @GetMapping("{id}")
-    public Result selectOne(@PathVariable Serializable id) {
+    public CommonResult selectOne(@PathVariable Serializable id) {
         return success(this.bookService.getById(id));
     }
 
@@ -60,7 +60,7 @@ public class BookController  {
      * @return 新增结果
      */
     @PostMapping
-    public Result insert(@RequestBody Book book) {
+    public CommonResult insert(@RequestBody Book book) {
         return success(this.bookService.save(book));
     }
 
@@ -71,7 +71,7 @@ public class BookController  {
      * @return 修改结果
      */
     @PutMapping
-    public Result update(@RequestBody Book book) {
+    public CommonResult update(@RequestBody Book book) {
         return success(this.bookService.updateById(book));
     }
 
@@ -82,7 +82,7 @@ public class BookController  {
      * @return 删除结果
      */
     @DeleteMapping
-    public Result delete(@RequestParam("idList") List<Long> idList) {
+    public CommonResult delete(@RequestParam("idList") List<Long> idList) {
         return success(this.bookService.removeByIds(idList));
     }
 }
