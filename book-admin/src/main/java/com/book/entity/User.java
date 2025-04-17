@@ -5,21 +5,27 @@ import com.baomidou.mybatisplus.extension.activerecord.Model;
 import java.io.Serializable;
 
 /**
- * (Book)表实体类
+ * (User)表实体类
  *
  * @author jojo思密达
- * @since 2025-04-17 19:48:44
+ * @since 2025-04-15 12:31:32
  */
 @SuppressWarnings("serial")
-public class Book extends Model<Book> {
+public class User extends Model<User> {
 //主键
     private Long id;
-//书名
-    private String bookName;
-//描述
-    private String introduce;
-//作者
-    private String author;
+//用户名
+    private String name;
+//性别
+    private String sex;
+//手机号码
+    private String phone;
+//生日
+    private String birthday;
+//昵称
+    private String nickName;
+//备注
+    private String memo;
 //创建人
     private String creater;
 //创建时间
@@ -40,28 +46,52 @@ public class Book extends Model<Book> {
         this.id = id;
     }
 
-    public String getBookName() {
-        return bookName;
+    public String getName() {
+        return name;
     }
 
-    public void setBookName(String bookName) {
-        this.bookName = bookName;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getIntroduce() {
-        return introduce;
+    public String getSex() {
+        return sex;
     }
 
-    public void setIntroduce(String introduce) {
-        this.introduce = introduce;
+    public void setSex(String sex) {
+        this.sex = sex;
     }
 
-    public String getAuthor() {
-        return author;
+    public String getPhone() {
+        return phone;
     }
 
-    public void setAuthor(String author) {
-        this.author = author;
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getBirthday() {
+        return birthday;
+    }
+
+    public void setBirthday(String birthday) {
+        this.birthday = birthday;
+    }
+
+    public String getNickName() {
+        return nickName;
+    }
+
+    public void setNickName(String nickName) {
+        this.nickName = nickName;
+    }
+
+    public String getMemo() {
+        return memo;
+    }
+
+    public void setMemo(String memo) {
+        this.memo = memo;
     }
 
     public String getCreater() {

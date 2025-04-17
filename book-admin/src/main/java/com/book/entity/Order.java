@@ -5,19 +5,19 @@ import com.baomidou.mybatisplus.extension.activerecord.Model;
 import java.io.Serializable;
 
 /**
- * (Book)表实体类
+ * (Order)表实体类
  *
  * @author jojo思密达
- * @since 2025-04-17 19:48:44
+ * @since 2025-04-15 12:31:55
  */
 @SuppressWarnings("serial")
-public class Book extends Model<Book> {
+public class Order extends Model<Order> {
 //主键
     private Long id;
 //书名
     private String bookName;
 //描述
-    private String introduce;
+    private String description;
 //作者
     private String author;
 //创建人
@@ -48,12 +48,12 @@ public class Book extends Model<Book> {
         this.bookName = bookName;
     }
 
-    public String getIntroduce() {
-        return introduce;
+    public String getDescription() {
+        return description;
     }
 
-    public void setIntroduce(String introduce) {
-        this.introduce = introduce;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public String getAuthor() {

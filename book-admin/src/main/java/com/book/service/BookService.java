@@ -6,8 +6,8 @@ import com.book.entity.Book;
 /**
  * (Book)表服务接口
  *
- * @author makejava
- * @since 2025-04-11 10:41:28
+ * @author jojo思密达
+ * @since 2025-04-17 19:48:44
  */
 public interface BookService extends IService<Book> {
 

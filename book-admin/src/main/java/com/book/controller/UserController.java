@@ -4,41 +4,41 @@ package com.book.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.book.entity.Book;
-import com.book.service.BookService;
+import com.book.entity.User;
+import com.book.service.UserService;
 import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import java.io.Serializable;
 import java.util.List;
-import org.springframework.web.bind.annotation.*;
 import com.book.common.CommonResult;
+
 import static com.book.common.CommonResult.success;
 
 /**
- * (Book)表控制层
+ * (User)表控制层
  *
  * @author jojo思密达
- * @since 2025-04-17 19:48:41
+ * @since 2025-04-15 12:31:26
  */
 @RestController
-@RequestMapping("book")
-public class BookController  {
+@RequestMapping("user")
+public class UserController  {
     /**
      * 服务对象
      */
     @Resource
-    private BookService bookService;
+    private UserService userService;
 
     /**
      * 分页查询所有数据
      *
      * @param page 分页对象
-     * @param book 查询实体
+     * @param user 查询实体
      * @return 所有数据
      */
     @GetMapping
-    public CommonResult selectAll(Page<Book> page, Book book) {
-        return success(this.bookService.page(page, new QueryWrapper<>(book)));
+    public CommonResult selectAll(Page<User> page, User user) {
+        return success(this.userService.page(page, new QueryWrapper<>(user)));
     }
 
     /**
@@ -49,29 +49,29 @@ public class BookController  {
      */
     @GetMapping("{id}")
     public CommonResult selectOne(@PathVariable Serializable id) {
-        return success(this.bookService.getById(id));
+        return success(this.userService.getById(id));
     }
 
     /**
      * 新增数据
      *
-     * @param book 实体对象
+     * @param user 实体对象
      * @return 新增结果
      */
     @PostMapping
-    public CommonResult insert(@RequestBody Book book) {
-        return success(this.bookService.save(book));
+    public CommonResult insert(@RequestBody User user) {
+        return success(this.userService.save(user));
     }
 
     /**
      * 修改数据
      *
-     * @param book 实体对象
+     * @param user 实体对象
      * @return 修改结果
      */
     @PutMapping
-    public CommonResult update(@RequestBody Book book) {
-        return success(this.bookService.updateById(book));
+    public CommonResult update(@RequestBody User user) {
+        return success(this.userService.updateById(user));
     }
 
     /**
@@ -82,7 +82,7 @@ public class BookController  {
      */
     @DeleteMapping
     public CommonResult delete(@RequestParam("idList") List<Long> idList) {
-        return success(this.bookService.removeByIds(idList));
+        return success(this.userService.removeByIds(idList));
     }
 }
 

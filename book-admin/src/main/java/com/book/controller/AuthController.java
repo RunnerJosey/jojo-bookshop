@@ -13,7 +13,7 @@ import static com.book.common.CommonResult.failed;
 import static com.book.common.CommonResult.success;
 
 @RestController
-@RequestMapping("api")
+@RequestMapping("auth")
 @Slf4j
 public class AuthController {
 
