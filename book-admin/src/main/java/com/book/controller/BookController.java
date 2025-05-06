@@ -69,7 +69,7 @@ public class BookController  {
      * @param book 实体对象
      * @return 修改结果
      */
-    @PutMapping
+    @PutMapping("/update")
     public CommonResult update(@RequestBody Book book) {
         return success(this.bookService.updateById(book));
     }
