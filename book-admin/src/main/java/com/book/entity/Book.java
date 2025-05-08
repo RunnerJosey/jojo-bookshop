@@ -1,7 +1,13 @@
 package com.book.entity;
 
 import java.util.Date;
+
+import cn.hutool.core.date.DateTime;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.Builder;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.io.Serializable;
 
 /**
@@ -12,23 +18,27 @@ import java.io.Serializable;
  */
 @SuppressWarnings("serial")
 public class Book extends Model<Book> {
-//主键
+    //主键
     private Long id;
-//书名
+    //书名
     private String bookName;
-//描述
+    //描述
     private String introduce;
-//作者
+    //作者
     private String author;
-//创建人
+    //创建人
     private String creater;
-//创建时间
-    private Date createTime;
-//更新人
+    //创建时间
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
+    private Date createTime ;
+    //更新人
     private String updater;
-//更新时间
-    private Date updateTime;
-//是否删除
+    //更新时间
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
+    private Date updateTime ;
+    //是否删除
     private String isDelete;
 
 

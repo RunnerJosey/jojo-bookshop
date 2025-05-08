@@ -1,5 +1,6 @@
 package com.book.service.impl;
 
+import cn.hutool.core.date.DateTime;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.book.dao.BookDao;
 import com.book.entity.Book;
@@ -14,6 +15,12 @@ import org.springframework.stereotype.Service;
  */
 @Service("bookService")
 public class BookServiceImpl extends ServiceImpl<BookDao, Book> implements BookService {
+    @Override
+    public boolean save(Book book){
+        book.setCreateTime(new DateTime());
+        book.setUpdateTime(new DateTime());
+        return super.save(book);
+    }
 
 }
 

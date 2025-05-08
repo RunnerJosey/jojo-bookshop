@@ -58,7 +58,7 @@ public class BookController  {
      * @param book 实体对象
      * @return 新增结果
      */
-    @PostMapping
+    @PostMapping("/add")
     public CommonResult insert(@RequestBody Book book) {
         return success(this.bookService.save(book));
     }
@@ -80,7 +80,7 @@ public class BookController  {
      * @param idList 主键结合
      * @return 删除结果
      */
-    @DeleteMapping
+    @DeleteMapping("/delete")
     public CommonResult delete(@RequestParam("idList") List<Long> idList) {
         return success(this.bookService.removeByIds(idList));
     }
