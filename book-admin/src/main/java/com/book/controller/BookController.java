@@ -38,6 +38,7 @@ public class BookController  {
      */
     @GetMapping
     public CommonResult selectAll(Page<Book> page, Book book) {
+
         return success(this.bookService.page(page, new QueryWrapper<>(book)));
     }
 
