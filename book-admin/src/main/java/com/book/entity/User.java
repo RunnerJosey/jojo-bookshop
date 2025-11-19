@@ -5,36 +5,40 @@ import com.baomidou.mybatisplus.extension.activerecord.Model;
 import java.io.Serializable;
 
 /**
- * (User)表实体类
+ * 用户表，存储用户基本信息(User)表实体类
  *
  * @author jojo思密达
- * @since 2025-04-15 12:31:32
+ * @since 2025-11-18 16:05:55
  */
 @SuppressWarnings("serial")
 public class User extends Model<User> {
-//主键
+    //主键
     private Long id;
-//用户名
-    private String name;
-//性别
+    //用户名
+    private String userName;
+
+    private String password;
+    //性别
     private String sex;
-//手机号码
+    //手机号码
     private String phone;
-//生日
+    //邮箱
+    private String email;
+    //生日
     private String birthday;
-//昵称
+    //昵称
     private String nickName;
-//备注
+    //备注
     private String memo;
-//创建人
+    //创建人
     private String creater;
-//创建时间
+    //创建时间
     private Date createTime;
-//更新人
+    //更新人
     private String updater;
-//更新时间
+    //更新时间
     private Date updateTime;
-//是否删除
+    //是否删除
     private String isDelete;
 
 
@@ -46,12 +50,20 @@ public class User extends Model<User> {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getSex() {
@@ -68,6 +80,14 @@ public class User extends Model<User> {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getBirthday() {
@@ -143,5 +163,6 @@ public class User extends Model<User> {
     public Serializable pkVal() {
         return this.id;
     }
+
 }
 

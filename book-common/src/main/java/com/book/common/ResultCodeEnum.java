@@ -10,15 +10,15 @@ public enum ResultCodeEnum implements IErrorCode {
     VALIDATE_FAILED(404, "validate_failed"),//参数检验失败
     UNAUTHORIZED(401, "unauthorized"),//暂未登录或token已经过期
     FORBIDDEN(403, "forbidden");//没有相关权限
-    private long code;
+    private int code;
     private String message;
 
-    private ResultCodeEnum(long code, String message) {
+    private ResultCodeEnum(int code, String message) {
         this.code = code;
         this.message = message;
     }
 
-    public long getCode() {
+    public int getCode() {
         return code;
     }
 

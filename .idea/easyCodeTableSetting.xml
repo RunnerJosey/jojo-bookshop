@@ -82,6 +82,86 @@
             </TableInfoDTO>
           </value>
         </entry>
+        <entry key="bookshop.menu">
+          <value>
+            <TableInfoDTO>
+              <option name="comment" value="菜单表" />
+              <option name="fullColumn">
+                <list>
+                  <ColumnInfoDTO>
+                    <option name="comment" value="主键" />
+                    <option name="custom" value="false" />
+                    <option name="ext" value="{}" />
+                    <option name="name" value="id" />
+                    <option name="type" value="java.lang.Integer" />
+                  </ColumnInfoDTO>
+                  <ColumnInfoDTO>
+                    <option name="comment" value="菜肴名字" />
+                    <option name="custom" value="false" />
+                    <option name="ext" value="{}" />
+                    <option name="name" value="dishesName" />
+                    <option name="type" value="java.lang.String" />
+                  </ColumnInfoDTO>
+                  <ColumnInfoDTO>
+                    <option name="comment" value="菜肴种类" />
+                    <option name="custom" value="false" />
+                    <option name="ext" value="{}" />
+                    <option name="name" value="dishesKind" />
+                    <option name="type" value="java.lang.String" />
+                  </ColumnInfoDTO>
+                  <ColumnInfoDTO>
+                    <option name="comment" value="菜肴使用者" />
+                    <option name="custom" value="false" />
+                    <option name="ext" value="{}" />
+                    <option name="name" value="dishesUser" />
+                    <option name="type" value="java.lang.String" />
+                  </ColumnInfoDTO>
+                  <ColumnInfoDTO>
+                    <option name="comment" value="创建时间" />
+                    <option name="custom" value="false" />
+                    <option name="ext" value="{}" />
+                    <option name="name" value="createTime" />
+                    <option name="type" value="java.lang.String" />
+                  </ColumnInfoDTO>
+                  <ColumnInfoDTO>
+                    <option name="comment" value="创建人" />
+                    <option name="custom" value="false" />
+                    <option name="ext" value="{}" />
+                    <option name="name" value="creater" />
+                    <option name="type" value="java.lang.String" />
+                  </ColumnInfoDTO>
+                  <ColumnInfoDTO>
+                    <option name="comment" value="更新时间" />
+                    <option name="custom" value="false" />
+                    <option name="ext" value="{}" />
+                    <option name="name" value="updateTime" />
+                    <option name="type" value="java.lang.String" />
+                  </ColumnInfoDTO>
+                  <ColumnInfoDTO>
+                    <option name="comment" value="更新者" />
+                    <option name="custom" value="false" />
+                    <option name="ext" value="{}" />
+                    <option name="name" value="updater" />
+                    <option name="type" value="java.lang.String" />
+                  </ColumnInfoDTO>
+                  <ColumnInfoDTO>
+                    <option name="comment" value="是否删除" />
+                    <option name="custom" value="false" />
+                    <option name="ext" value="{}" />
+                    <option name="name" value="isDelete" />
+                    <option name="type" value="java.lang.Integer" />
+                  </ColumnInfoDTO>
+                </list>
+              </option>
+              <option name="name" value="Menu" />
+              <option name="preName" value="" />
+              <option name="saveModelName" value="book-admin" />
+              <option name="savePackageName" value="com.book" />
+              <option name="savePath" value="./book-admin/src/main/java/com/book" />
+              <option name="templateGroupName" value="MybatisPlus" />
+            </TableInfoDTO>
+          </value>
+        </entry>
         <entry key="bookshop.oms_order">
           <value>
             <TableInfoDTO>
@@ -487,6 +567,7 @@
         <entry key="bookshop.user">
           <value>
             <TableInfoDTO>
+              <option name="comment" value="用户表，存储用户基本信息" />
               <option name="fullColumn">
                 <list>
                   <ColumnInfoDTO>
@@ -500,7 +581,13 @@
                     <option name="comment" value="用户名" />
                     <option name="custom" value="false" />
                     <option name="ext" value="{}" />
-                    <option name="name" value="name" />
+                    <option name="name" value="userName" />
+                    <option name="type" value="java.lang.String" />
+                  </ColumnInfoDTO>
+                  <ColumnInfoDTO>
+                    <option name="custom" value="false" />
+                    <option name="ext" value="{}" />
+                    <option name="name" value="password" />
                     <option name="type" value="java.lang.String" />
                   </ColumnInfoDTO>
                   <ColumnInfoDTO>
@@ -515,6 +602,13 @@
                     <option name="custom" value="false" />
                     <option name="ext" value="{}" />
                     <option name="name" value="phone" />
+                    <option name="type" value="java.lang.String" />
+                  </ColumnInfoDTO>
+                  <ColumnInfoDTO>
+                    <option name="comment" value="邮箱" />
+                    <option name="custom" value="false" />
+                    <option name="ext" value="{}" />
+                    <option name="name" value="email" />
                     <option name="type" value="java.lang.String" />
                   </ColumnInfoDTO>
                   <ColumnInfoDTO>

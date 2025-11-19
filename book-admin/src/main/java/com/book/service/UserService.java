@@ -2,6 +2,7 @@ package com.book.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.book.entity.User;
+import org.springframework.security.core.userdetails.UserDetails;
 
 /**
  * (User)表服务接口
@@ -11,5 +12,18 @@ import com.book.entity.User;
  */
 public interface UserService extends IService<User> {
 
+    /**
+     * 根据用户名字查询用户
+     * @param username
+     * @return
+     */
+    UserDetails loadUserByUsername(String username);
+
+    /**
+     * 根据用户名查询用户
+     * @param username
+     * @return
+     */
+    boolean getUserByUsername(String username);
 }
 

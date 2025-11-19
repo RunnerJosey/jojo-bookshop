@@ -2,12 +2,27 @@ package com.book.controller;
 
 
 
+import cn.hutool.jwt.JWTUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.book.config.utils.JwtUtil;
 import com.book.entity.User;
+import com.book.entity.request.user.UserDTO;
+import com.book.request.LoginRequest;
 import com.book.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
+import javax.validation.Valid;
 import java.io.Serializable;
 import java.util.List;
 import com.book.common.CommonResult;
@@ -28,6 +43,14 @@ public class UserController  {
      */
     @Resource
     private UserService userService;
+    @Autowired
+    private RedisTemplate redisTemplate;
+    @Autowired
+    private JwtUtil jwtUtil;
+    @Autowired
+    private  AuthenticationManager authenticationManager;
+
+    private static final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     /**
      * 分页查询所有数据
@@ -84,5 +107,51 @@ public class UserController  {
     public CommonResult delete(@RequestParam("idList") List<Long> idList) {
         return success(this.userService.removeByIds(idList));
     }
+
+    /**
+     * 用户注册
+     * @param userDTO
+     * @return
+     */
+    @PostMapping("/register")
+    public ResponseEntity<String> register(@Valid @RequestBody UserDTO userDTO) {
+        if (userService.getUserByUsername(userDTO.getUserName())) {
+            return ResponseEntity.badRequest().body("用户名已存在");
+        }
+        User user = new User();
+        user.setUserName(userDTO.getUserName());
+        user.setPassword(passwordEncoder.encode(userDTO.getPassword())); // BCrypt加密
+        user.setEmail(userDTO.getEmail());
+//        user.setRole("USER");
+        userService.save(user);
+        return ResponseEntity.ok("注册成功");
+    }
+
+    /**
+     *用户登录
+     */
+    @PostMapping("/login")
+    public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest) {
+        // Redis 限流（Lua脚本）
+        String key = "login:fail:" + loginRequest.getUsername();
+        Long failCount = redisTemplate.opsForValue().increment(key, 1);
+
+        if (failCount != null && failCount > 5) {
+            return ResponseEntity.status(429).body("登录过于频繁");
+        }
+
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+
+        String token = jwtUtil.generateToken(authentication.getName(),
+                authentication.getAuthorities().stream()
+                        .map(GrantedAuthority::getAuthority)
+                        .findFirst()
+                        .orElse("USER"));
+        return ResponseEntity.ok(token);
+    }
+
+
 }
+
 
