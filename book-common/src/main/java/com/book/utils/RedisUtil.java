@@ -1,4 +1,4 @@
-package com.book.config.utils;
+package com.book.utils;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;

@@ -1,6 +1,6 @@
 package com.book.entity;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 import java.io.Serializable;
 
@@ -8,7 +8,7 @@ import java.io.Serializable;
  * 用户表，存储用户基本信息(User)表实体类
  *
  * @author jojo思密达
- * @since 2025-11-18 16:05:55
+ * @since 2025-11-19 18:00:48
  */
 @SuppressWarnings("serial")
 public class User extends Model<User> {
@@ -33,11 +33,11 @@ public class User extends Model<User> {
     //创建人
     private String creater;
     //创建时间
-    private Date createTime;
+    private LocalDateTime createTime;
     //更新人
     private String updater;
     //更新时间
-    private Date updateTime;
+    private LocalDateTime updateTime;
     //是否删除
     private String isDelete;
 
@@ -122,11 +122,11 @@ public class User extends Model<User> {
         this.creater = creater;
     }
 
-    public Date getCreateTime() {
+    public LocalDateTime getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(Date createTime) {
+    public void setCreateTime(LocalDateTime createTime) {
         this.createTime = createTime;
     }
 
@@ -138,11 +138,11 @@ public class User extends Model<User> {
         this.updater = updater;
     }
 
-    public Date getUpdateTime() {
+    public LocalDateTime getUpdateTime() {
         return updateTime;
     }
 
-    public void setUpdateTime(Date updateTime) {
+    public void setUpdateTime(LocalDateTime updateTime) {
         this.updateTime = updateTime;
     }
 
@@ -163,6 +163,5 @@ public class User extends Model<User> {
     public Serializable pkVal() {
         return this.id;
     }
-
 }
 

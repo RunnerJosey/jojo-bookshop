@@ -12,5 +12,7 @@ import com.book.entity.Book;
 public interface BookService extends IService<Book> {
 
     public boolean save(Book book);
+
+    public Book getById(Long id);
 }
 

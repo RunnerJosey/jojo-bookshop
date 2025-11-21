@@ -5,7 +5,11 @@ package com.book.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.book.entity.Book;
+import com.book.request.BasePageReq;
 import com.book.service.BookService;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import java.io.Serializable;
@@ -22,6 +26,7 @@ import static com.book.common.CommonResult.success;
  */
 @RestController
 @RequestMapping("book")
+@Slf4j
 public class BookController  {
     /**
      * 服务对象
@@ -32,14 +37,22 @@ public class BookController  {
     /**
      * 分页查询所有数据
      *
-     * @param page 分页对象
-     * @param book 查询实体
      * @return 所有数据
      */
     @GetMapping
-    public CommonResult selectAll(Page<Book> page, Book book) {
+    public CommonResult selectAll(BasePageReq req) {
+        log.info("分页请求参数: current={}, size={}", req.getCurrent(), req.getSize());
 
-        return success(this.bookService.page(page, new QueryWrapper<>(book)));
+        Page<Book> page = new Page<>(req.getCurrent(), req.getSize());
+        Book book= new Book();
+        Page<Book> result = this.bookService.page(page, new QueryWrapper<>(book));
+
+        log.info("分页结果: total={}, pages={}, current={}, size={}, records.size={}",
+                result.getTotal(), result.getPages(), result.getCurrent(),
+                result.getSize(), result.getRecords().size());
+
+        // 封装分页结果
+        return success(result);
     }
 
     /**
@@ -48,8 +61,8 @@ public class BookController  {
      * @param id 主键
      * @return 单条数据
      */
-    @GetMapping("{id}")
-    public CommonResult selectOne(@PathVariable Serializable id) {
+    @GetMapping("getById")
+    public CommonResult getById(@RequestParam("id") Long id) {
         return success(this.bookService.getById(id));
     }
 

@@ -1,15 +1,19 @@
 package com.book.service.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.book.dao.UserDao;
 import com.book.entity.User;
+import com.book.exception.BusinessException;
 import com.book.service.UserService;
+import com.github.pagehelper.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 
@@ -35,13 +39,19 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
         // 1. 从数据库查询用户
         LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(User::getUserName,username);
-        User user = userDao.selectList(queryWrapper).stream().findAny().get();
-
+        User user = userDao.selectList(queryWrapper).stream().findAny().orElse(null);
+        // 检查用户是否存在
+        if (user == null) {
+            throw new BusinessException(10001,"用户不存在: " + username);
+        }
         //获取角色
         String role = "";
         List<String> roles = userDao.selectRoles(user.getId());
         if(CollectionUtil.isNotEmpty(roles)){
             role = roles.get(0);
+        }
+        if(StringUtil.isEmpty(role)){
+//            throw new BusinessException(10002,"用户角色不存在: " + role);
         }
 
         // 2. 将自定义User转换为Spring Security的UserDetails
@@ -57,7 +67,7 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
     }
 
     @Override
-    public boolean getUserByUsername(String username) {
+    public boolean isExistUsername(String username) {
         LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(User::getUserName,username);
         List<User> list = userDao.selectList(queryWrapper);

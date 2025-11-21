@@ -1,5 +1,6 @@
-package com.book.config.utils;
+package com.book.utils;
 
+import com.book.constant.BusinessConstant;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.stereotype.Component;
@@ -11,22 +12,21 @@ import java.util.Date;
  */
 @Component
 public class JwtUtil {
-    private static final String SECRET_KEY = "your-256-bit-secret";
-    private static final long EXPIRATION_TIME = 3600_000; // 1小时
+
 
     public String generateToken(String username, String role) {
         return Jwts.builder()
                 .setSubject(username)
                 .claim("role", role)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
-                .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
+                .setExpiration(new Date(System.currentTimeMillis() + BusinessConstant.EXPIRATION_TIME))
+                .signWith(SignatureAlgorithm.HS256, BusinessConstant.SECRET_KEY)
                 .compact();
     }
 
     public String getUsernameFromToken(String token) {
         return Jwts.parser()
-                .setSigningKey(SECRET_KEY)
+                .setSigningKey(BusinessConstant.SECRET_KEY)
                 .parseClaimsJws(token)
                 .getBody()
                 .getSubject();
@@ -34,7 +34,7 @@ public class JwtUtil {
 
     public boolean validateToken(String token) {
         try {
-            Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token);
+            Jwts.parser().setSigningKey(BusinessConstant.SECRET_KEY).parseClaimsJws(token);
             return true;
         } catch (Exception e) {
             return false;

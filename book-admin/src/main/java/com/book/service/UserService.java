@@ -24,6 +24,6 @@ public interface UserService extends IService<User> {
      * @param username
      * @return
      */
-    boolean getUserByUsername(String username);
+    boolean isExistUsername(String username);
 }
 

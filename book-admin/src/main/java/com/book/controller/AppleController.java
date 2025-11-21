@@ -1,6 +1,6 @@
 package com.book.controller;
 
-import com.book.config.utils.RedisUtil;
+import com.book.utils.RedisUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

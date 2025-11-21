@@ -2,31 +2,33 @@ package com.book.controller;
 
 
 
-import cn.hutool.jwt.JWTUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.book.config.utils.JwtUtil;
+import com.book.constant.BusinessConstant;
+import com.book.utils.JwtUtil;
 import com.book.entity.User;
-import com.book.entity.request.user.UserDTO;
+import com.book.request.UserRegisterRequest;
 import com.book.request.LoginRequest;
 import com.book.service.UserService;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.validation.Valid;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.List;
 import com.book.common.CommonResult;
 
+import static com.book.common.CommonResult.failed;
 import static com.book.common.CommonResult.success;
 
 /**
@@ -37,6 +39,7 @@ import static com.book.common.CommonResult.success;
  */
 @RestController
 @RequestMapping("user")
+@Slf4j
 public class UserController  {
     /**
      * 服务对象
@@ -110,45 +113,53 @@ public class UserController  {
 
     /**
      * 用户注册
-     * @param userDTO
      * @return
      */
     @PostMapping("/register")
-    public ResponseEntity<String> register(@Valid @RequestBody UserDTO userDTO) {
-        if (userService.getUserByUsername(userDTO.getUserName())) {
-            return ResponseEntity.badRequest().body("用户名已存在");
+    public CommonResult<String> register(@Valid @RequestBody UserRegisterRequest req) {
+        log.info("用户注册==");
+        if (!userService.isExistUsername(req.getUserName())) {
+            return failed("用户名已存在");
         }
         User user = new User();
-        user.setUserName(userDTO.getUserName());
-        user.setPassword(passwordEncoder.encode(userDTO.getPassword())); // BCrypt加密
-        user.setEmail(userDTO.getEmail());
+        BeanUtils.copyProperties(req,user);
+        user.setUserName(req.getUserName());
+        user.setPassword(passwordEncoder.encode(req.getPassword())); // BCrypt加密
+        user.setEmail(req.getEmail());
+        user.setCreater(req.getUserName());
+        user.setCreateTime(LocalDateTime.now());
 //        user.setRole("USER");
         userService.save(user);
-        return ResponseEntity.ok("注册成功");
+        return success("注册成功");
     }
 
     /**
      *用户登录
      */
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest) {
+    public CommonResult<String> login(@Valid @RequestBody LoginRequest loginRequest) {
+        log.info("====用户登录接口========");
         // Redis 限流（Lua脚本）
-        String key = "login:fail:" + loginRequest.getUsername();
+        String key = "login:fail:" + loginRequest.getUserName();
         Long failCount = redisTemplate.opsForValue().increment(key, 1);
 
         if (failCount != null && failCount > 5) {
-            return ResponseEntity.status(429).body("登录过于频繁");
+//            return failed("登录过于频繁");
         }
-
+        //验证用户名密码
         Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+                new UsernamePasswordAuthenticationToken(loginRequest.getUserName(), loginRequest.getPassword()));
 
+        //生成JWT字符串令牌
         String token = jwtUtil.generateToken(authentication.getName(),
                 authentication.getAuthorities().stream()
                         .map(GrantedAuthority::getAuthority)
                         .findFirst()
                         .orElse("USER"));
-        return ResponseEntity.ok(token);
+        //将token存在redis中,并设置过期时间,只是存一下，验证时候暂时不用这个（后续如果做防篡改设定的时候，可以对比一下redis token 和JWT）
+        redisTemplate.opsForValue().set((BusinessConstant.TOKEN_PREFIX  + loginRequest.getUserName()), "Bearer " + token, BusinessConstant.EXPIRATION_TIME);
+
+        return success("Bearer " + token);
     }
 
 

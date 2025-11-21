@@ -1,4 +1,4 @@
-package com.book.config.utils;
+package com.book.utils;
 
 import lombok.extern.slf4j.Slf4j;
 
