@@ -5,6 +5,7 @@ package com.book.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.book.constant.BusinessConstant;
+import com.book.request.BasePageReq;
 import com.book.utils.JwtUtil;
 import com.book.entity.User;
 import com.book.request.UserRegisterRequest;
@@ -58,13 +59,13 @@ public class UserController  {
     /**
      * 分页查询所有数据
      *
-     * @param page 分页对象
-     * @param user 查询实体
      * @return 所有数据
      */
-    @GetMapping
-    public CommonResult selectAll(Page<User> page, User user) {
-        return success(this.userService.page(page, new QueryWrapper<>(user)));
+    @GetMapping("/getUserList")
+    public CommonResult selectAll(BasePageReq req) {
+        Page<User> page = new Page<>(req.getCurrent(), req.getSize());
+        User user= new User();
+        return success(this.userService.selectPage(page, new QueryWrapper<>(user)));
     }
 
     /**
@@ -73,8 +74,8 @@ public class UserController  {
      * @param id 主键
      * @return 单条数据
      */
-    @GetMapping("{id}")
-    public CommonResult selectOne(@PathVariable Serializable id) {
+    @GetMapping("getById")
+    public CommonResult selectOne(@RequestParam("id") Long id) {
         return success(this.userService.getById(id));
     }
 
@@ -84,7 +85,7 @@ public class UserController  {
      * @param user 实体对象
      * @return 新增结果
      */
-    @PostMapping
+    @PostMapping("add")
     public CommonResult insert(@RequestBody User user) {
         return success(this.userService.save(user));
     }
@@ -95,7 +96,7 @@ public class UserController  {
      * @param user 实体对象
      * @return 修改结果
      */
-    @PutMapping
+    @PutMapping("update")
     public CommonResult update(@RequestBody User user) {
         return success(this.userService.updateById(user));
     }
@@ -106,7 +107,7 @@ public class UserController  {
      * @param idList 主键结合
      * @return 删除结果
      */
-    @DeleteMapping
+    @DeleteMapping("delete")
     public CommonResult delete(@RequestParam("idList") List<Long> idList) {
         return success(this.userService.removeByIds(idList));
     }

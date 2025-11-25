@@ -14,9 +14,6 @@ import java.util.List;
  */
 public interface UserDao extends BaseMapper<User> {
 
-    @Select("select r.role_name " +
-            "from role r " +
-            "left join user_role ur on ur.role_id = r.id where ur.user_id = #{id}")
-    List<String> selectRoles(Long id);
+
 }
 

@@ -1,8 +1,10 @@
-package com.book.entity;
+package com.book.response;
 
-import java.time.LocalDateTime;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
+
 import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * 用户表，存储用户基本信息(User)表实体类
@@ -11,10 +13,8 @@ import java.io.Serializable;
  * @since 2025-11-19 18:00:48
  */
 @SuppressWarnings("serial")
-public class User extends Model<User> {
-    /**
-     * 主键
-     */
+public class UserResponse extends Model<UserResponse> {
+    //主键
     private Long id;
     //用户名
     private String userName;
@@ -43,6 +43,15 @@ public class User extends Model<User> {
     //是否删除
     private String isDelete;
 
+    private List<String> roles;
+
+    public List<String> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<String> roles) {
+        this.roles = roles;
+    }
 
     public Long getId() {
         return id;

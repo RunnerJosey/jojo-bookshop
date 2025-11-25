@@ -3,12 +3,19 @@ package com.book.service.impl;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.book.dao.RoleDao;
 import com.book.dao.UserDao;
+import com.book.entity.Role;
 import com.book.entity.User;
 import com.book.exception.BusinessException;
+import com.book.request.BasePageReq;
+import com.book.response.UserResponse;
 import com.book.service.UserService;
 import com.github.pagehelper.util.StringUtil;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -16,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * (User)表服务实现类
@@ -28,6 +36,8 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
 
     @Autowired
     private UserDao userDao;
+    @Autowired
+    private RoleDao roleDao;
 
     /**
      * 根据用户名字查询用户
@@ -46,7 +56,7 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
         }
         //获取角色
         String role = "";
-        List<String> roles = userDao.selectRoles(user.getId());
+        List<String> roles = roleDao.selectRoles(user.getId());
         if(CollectionUtil.isNotEmpty(roles)){
             role = roles.get(0);
         }
@@ -75,6 +85,28 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
             return false;
         }
         return true;
+    }
+
+    @Override
+    public Page<UserResponse> selectPage(Page<User> page, QueryWrapper<User> userQueryWrapper){
+        Page<User> userPage = userDao.selectPage(page, userQueryWrapper);
+        Page<UserResponse> userResponsePage = new Page<>();
+        BeanUtils.copyProperties(userPage,userResponsePage);
+        if(CollectionUtil.isEmpty(userPage.getRecords())){
+            return userResponsePage;
+        }
+        List<UserResponse> responseList = userPage.getRecords().stream().map(user -> {
+            UserResponse response = new UserResponse();
+            BeanUtils.copyProperties(user, response);
+            List<String> roles = roleDao.selectRoles(user.getId());
+            if (CollectionUtil.isNotEmpty(roles)) {
+                response.setRoles(roles);
+            }
+            return response;
+        }).collect(Collectors.toList());
+        userResponsePage.setRecords(responseList);
+        return userResponsePage;
+
     }
 }
 

@@ -1,7 +1,10 @@
 package com.book.service;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.book.entity.User;
+import com.book.response.UserResponse;
 import org.springframework.security.core.userdetails.UserDetails;
 
 /**
@@ -25,5 +28,7 @@ public interface UserService extends IService<User> {
      * @return
      */
     boolean isExistUsername(String username);
+
+    Page<UserResponse> selectPage(Page<User> page, QueryWrapper<User> userQueryWrapper);
 }
 

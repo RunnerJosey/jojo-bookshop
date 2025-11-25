@@ -7,14 +7,10 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.book.entity.Book;
 import com.book.request.BasePageReq;
 import com.book.service.BookService;
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
-import java.io.Serializable;
 import java.util.List;
-import org.springframework.web.bind.annotation.*;
 import com.book.common.CommonResult;
 import static com.book.common.CommonResult.success;
 
@@ -46,10 +42,6 @@ public class BookController  {
         Page<Book> page = new Page<>(req.getCurrent(), req.getSize());
         Book book= new Book();
         Page<Book> result = this.bookService.page(page, new QueryWrapper<>(book));
-
-        log.info("分页结果: total={}, pages={}, current={}, size={}, records.size={}",
-                result.getTotal(), result.getPages(), result.getCurrent(),
-                result.getSize(), result.getRecords().size());
 
         // 封装分页结果
         return success(result);
