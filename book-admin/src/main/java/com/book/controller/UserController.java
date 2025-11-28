@@ -2,10 +2,14 @@ package com.book.controller;
 
 
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.book.constant.BusinessConstant;
+import com.book.dao.RoleDao;
+import com.book.entity.Role;
 import com.book.request.BasePageReq;
+import com.book.request.UserRequest;
 import com.book.utils.JwtUtil;
 import com.book.entity.User;
 import com.book.request.UserRegisterRequest;
@@ -93,12 +97,12 @@ public class UserController  {
     /**
      * 修改数据
      *
-     * @param user 实体对象
      * @return 修改结果
      */
     @PutMapping("update")
-    public CommonResult update(@RequestBody User user) {
-        return success(this.userService.updateById(user));
+    public CommonResult update(@RequestBody UserRequest request) {
+
+        return success(this.userService.updateUserAndRole(request));
     }
 
     /**

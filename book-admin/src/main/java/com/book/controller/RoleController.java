@@ -49,7 +49,7 @@ public class RoleController  {
      * @return 单条数据
      */
     @GetMapping("getById")
-    public CommonResult selectOne(@PathVariable Serializable id) {
+    public CommonResult selectOne(@PathVariable Long id) {
         return success(this.roleService.getById(id));
     }
 
@@ -59,7 +59,7 @@ public class RoleController  {
      * @param role 实体对象
      * @return 新增结果
      */
-    @PostMapping
+    @PostMapping("add")
     public CommonResult insert(@RequestBody Role role) {
         return success(this.roleService.save(role));
     }
@@ -70,7 +70,7 @@ public class RoleController  {
      * @param role 实体对象
      * @return 修改结果
      */
-    @PutMapping
+    @PutMapping("update")
     public CommonResult update(@RequestBody Role role) {
         return success(this.roleService.updateById(role));
     }
@@ -81,7 +81,7 @@ public class RoleController  {
      * @param idList 主键结合
      * @return 删除结果
      */
-    @DeleteMapping
+    @DeleteMapping("delete")
     public CommonResult delete(@RequestParam("idList") List<Long> idList) {
         return success(this.roleService.removeByIds(idList));
     }

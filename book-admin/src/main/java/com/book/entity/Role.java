@@ -1,6 +1,10 @@
 package com.book.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.io.Serializable;
 
 /**
@@ -14,6 +18,8 @@ public class Role extends Model<Role> {
     /**
      * 角色ID     
      */
+    @TableId(value = "id", type = IdType.AUTO)
+    @JsonProperty("id")
     private Long id;
     /**
      * 角色名称（如：ADMIN,USER）     
@@ -49,14 +55,10 @@ public class Role extends Model<Role> {
         this.description = description;
     }
 
-    /**
-     * 获取主键值
-     *
-     * @return 主键值
-     */
     @Override
     public Serializable pkVal() {
         return this.id;
     }
+
 }
 

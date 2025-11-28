@@ -4,17 +4,24 @@ import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.book.common.CommonResult;
 import com.book.dao.RoleDao;
 import com.book.dao.UserDao;
+import com.book.dao.UserRoleDao;
 import com.book.entity.Role;
 import com.book.entity.User;
+import com.book.entity.UserRole;
 import com.book.exception.BusinessException;
 import com.book.request.BasePageReq;
+import com.book.request.UserRequest;
 import com.book.response.UserResponse;
+import com.book.service.UserRoleService;
 import com.book.service.UserService;
 import com.github.pagehelper.util.StringUtil;
+import org.mybatis.spring.batch.MyBatisBatchItemWriter;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -38,6 +45,8 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
     private UserDao userDao;
     @Autowired
     private RoleDao roleDao;
+    @Autowired
+    private UserRoleService userRoleService;
 
     /**
      * 根据用户名字查询用户
@@ -107,6 +116,50 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
         userResponsePage.setRecords(responseList);
         return userResponsePage;
 
+    }
+
+    @Override
+    public CommonResult updateUserAndRole(UserRequest request) {
+        UpdateWrapper<User> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.eq("id", request.getId());
+        // 只设置非空字段
+        if (StringUtils.hasText(request.getUserName())) {
+            updateWrapper.set("user_name", request.getUserName());
+        }
+        if (StringUtils.hasText(request.getNickName())) {
+            updateWrapper.set("nick_name", request.getNickName());
+        }
+        if (StringUtils.hasText(request.getPhone())) {
+            updateWrapper.set("phone", request.getPhone());
+        }
+        if (StringUtils.hasText(request.getEmail())) {
+            updateWrapper.set("email", request.getEmail());
+        }
+        if (StringUtils.hasText(request.getBirthday())) {
+            updateWrapper.set("birthday", request.getBirthday());
+        }
+        // 执行更新
+        userDao.update(null, updateWrapper);
+
+        //根据名字获取角色
+        LambdaQueryWrapper<Role> roleQuery = new LambdaQueryWrapper<Role>();
+        roleQuery.in(Role::getRoleName,request.getRoles());
+        List<Role> roles = roleDao.selectList(roleQuery);
+        if(userRoleService.lambdaQuery().eq(UserRole::getUserId, request.getId()).count() > 0){
+            //删除当前用户的角色
+            userRoleService.remove(new LambdaQueryWrapper<UserRole>().eq(UserRole::getUserId, request.getId()));
+        }
+        if(CollectionUtil.isNotEmpty(roles)){
+            List<UserRole> userRoleList = roles.stream().map(role -> {
+                UserRole userRole = new UserRole();
+                userRole.setUserId(request.getId());
+                userRole.setRoleId(role.getId());
+                return userRole;
+            }).collect(Collectors.toList());
+            //保存用户角色关系
+            userRoleService.saveBatch(userRoleList);
+        }
+        return CommonResult.success("更新成功！");
     }
 }
 
