@@ -19,7 +19,6 @@ public class Role extends Model<Role> {
      * 角色ID     
      */
     @TableId(value = "id", type = IdType.AUTO)
-    @JsonProperty("id")
     private Long id;
     /**
      * 角色名称（如：ADMIN,USER）     
