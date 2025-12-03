@@ -34,5 +34,7 @@ public interface UserService extends IService<User> {
     Page<UserResponse> selectPage(Page<User> page, QueryWrapper<User> userQueryWrapper);
 
     CommonResult updateUserAndRole(UserRequest request);
+
+    User selectUserByUsername(String userName);
 }
 

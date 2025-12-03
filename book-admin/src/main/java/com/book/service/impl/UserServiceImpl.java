@@ -161,5 +161,18 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
         }
         return CommonResult.success("更新成功！");
     }
+
+    @Override
+    public User selectUserByUsername(String userName) {
+        // 1. 从数据库查询用户
+        LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(User::getUserName,userName);
+        User user = userDao.selectList(queryWrapper).stream().findAny().orElse(null);
+        // 检查用户是否存在
+        if (user == null) {
+            throw new BusinessException(10001,"用户不存在: " + userName);
+        }
+        return user;
+    }
 }
 

@@ -110,10 +110,24 @@
                     <option name="type" value="java.lang.String" />
                   </ColumnInfoDTO>
                   <ColumnInfoDTO>
+                    <option name="comment" value="书籍名称" />
+                    <option name="custom" value="false" />
+                    <option name="ext" value="{}" />
+                    <option name="name" value="bookName" />
+                    <option name="type" value="java.lang.String" />
+                  </ColumnInfoDTO>
+                  <ColumnInfoDTO>
                     <option name="comment" value="书籍规格ID" />
                     <option name="custom" value="false" />
                     <option name="ext" value="{}" />
                     <option name="name" value="specId" />
+                    <option name="type" value="java.lang.String" />
+                  </ColumnInfoDTO>
+                  <ColumnInfoDTO>
+                    <option name="comment" value="书籍规格" />
+                    <option name="custom" value="false" />
+                    <option name="ext" value="{}" />
+                    <option name="name" value="specName" />
                     <option name="type" value="java.lang.String" />
                   </ColumnInfoDTO>
                   <ColumnInfoDTO>
@@ -128,7 +142,7 @@
                     <option name="custom" value="false" />
                     <option name="ext" value="{}" />
                     <option name="name" value="price" />
-                    <option name="type" value="java.lang.Double" />
+                    <option name="type" value="java.math.BigDecimal" />
                   </ColumnInfoDTO>
                   <ColumnInfoDTO>
                     <option name="comment" value="是否选中（1=是，0=否）" />

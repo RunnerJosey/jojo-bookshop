@@ -1,9 +1,10 @@
-package com.book.entity;
+package com.book.response;
+
+import com.baomidou.mybatisplus.extension.activerecord.Model;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import com.baomidou.mybatisplus.extension.activerecord.Model;
-import java.io.Serializable;
 
 /**
  * 购物车表(CartItem)表实体类
@@ -12,7 +13,7 @@ import java.io.Serializable;
  * @since 2025-12-03 15:32:26
  */
 @SuppressWarnings("serial")
-public class CartItem extends Model<CartItem> {
+public class CartItemResponse extends Model<CartItemResponse> {
     /**
      * 主键ID     
      */
@@ -52,10 +53,12 @@ public class CartItem extends Model<CartItem> {
     /**
      * 加购时间     
      */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime addTime;
     /**
      * 更新时间     
      */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime updateTime;
     /**
      * 是否删除（1=删除，0=正常）     
