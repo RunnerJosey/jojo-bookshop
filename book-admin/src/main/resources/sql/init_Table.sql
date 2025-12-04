@@ -24,30 +24,32 @@ CREATE TABLE IF NOT EXISTS `book` (
     `create_time` datetime NOT NULL COMMENT '创建时间',
     `updater` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '' COMMENT '更新人',
     `update_time` datetime NOT NULL COMMENT '更新时间',
-    `is_delete` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '' COMMENT '是否删除',
+    `is_delete` tinyint NOT NULL DEFAULT (0) COMMENT '是否删除',
     PRIMARY KEY (`id`)
     ) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci AVG_ROW_LENGTH=1 ROW_FORMAT=COMPRESSED;
 
 -- 正在导出表  bookshop.book 的数据：~11 rows (大约)
 INSERT INTO `book` (`id`, `book_name`, `introduce`, `author`, `creater`, `create_time`, `updater`, `update_time`, `is_delete`) VALUES
-                                                                                                                                   (1, '三国演绎', '桃园三结义', '罗贯中', 'Josey16', '2025-04-14 12:12:26', 'Josey', '2025-04-14 12:12:32', '0'),
-                                                                                                                                   (3, '卖包子的小蘑菇', '啦啦啦', 'ffff', 'jojo', '2025-05-08 09:19:18', '', '2025-05-08 09:19:18', '0'),
-                                                                                                                                   (7, '天天消消乐', '收到324342342', 'jackfasdfa', 'jojo', '2025-05-08 15:02:15', '', '2025-05-08 15:02:15', '0'),
-                                                                                                                                   (8, '今晚打老虎', 'fsadf', 'dsafs', 'sdaf', '2025-05-08 15:12:11', '', '2025-05-08 15:12:11', '0'),
-                                                                                                                                   (9, '无巧不成书', 'dsaf', 'sdaf', 'sfas', '2025-05-08 15:12:18', '', '2025-05-08 15:12:18', '0'),
-                                                                                                                                   (10, '天元突破', 'sfa', 'safa', 'safas', '2025-05-08 15:12:25', '', '2025-05-08 15:12:25', '0'),
-                                                                                                                                   (11, '原本是一家', 'asdf', 'asfda', 'safdas', '2025-05-08 15:12:32', '', '2025-05-08 15:12:32', '0'),
-                                                                                                                                   (12, '咒术回战', 'afdas', 'sadfa', 'safdas', '2025-05-08 15:12:38', '', '2025-05-08 15:12:38', '0'),
-                                                                                                                                   (13, '今天一起包饺砸', '发大水', '发射点发生', '而我却发撒从', '2025-09-17 09:29:20', '', '2025-09-17 09:29:20', '0'),
-                                                                                                                                   (15, '侠客行', '阿利法', '金庸', 'jojo', '2025-11-20 17:49:51', '', '2025-11-20 17:49:51', '0'),
-                                                                                                                                   (16, '狗哥的一生', 'fasdf', 'afdas', 'afs', '2025-11-20 17:50:31', '', '2025-11-20 17:50:31', '0');
+                                                                                                                                   (1, '三国演绎', '桃园三结义', '罗贯中', 'Josey16', '2025-04-14 12:12:26', 'Josey', '2025-04-14 12:12:32', 0),
+                                                                                                                                   (3, '卖包子的小蘑菇', '啦啦啦', 'ffff', 'jojo', '2025-05-08 09:19:18', '', '2025-05-08 09:19:18', 0),
+                                                                                                                                   (7, '天天消消乐', '收到324342342', 'jackfasdfa', 'jojo', '2025-05-08 15:02:15', '', '2025-05-08 15:02:15', 0),
+                                                                                                                                   (8, '今晚打老虎', 'fsadf', 'dsafs', 'sdaf', '2025-05-08 15:12:11', '', '2025-05-08 15:12:11', 0),
+                                                                                                                                   (9, '无巧不成书', 'dsaf', 'sdaf', 'sfas', '2025-05-08 15:12:18', '', '2025-05-08 15:12:18', 0),
+                                                                                                                                   (10, '天元突破', 'sfa', 'safa', 'safas', '2025-05-08 15:12:25', '', '2025-05-08 15:12:25', 0),
+                                                                                                                                   (11, '原本是一家', 'asdf', 'asfda', 'safdas', '2025-05-08 15:12:32', '', '2025-05-08 15:12:32', 0),
+                                                                                                                                   (12, '咒术回战', 'afdas', 'sadfa', 'safdas', '2025-05-08 15:12:38', '', '2025-05-08 15:12:38', 0),
+                                                                                                                                   (13, '今天一起包饺砸', '发大水', '发射点发生', '而我却发撒从', '2025-09-17 09:29:20', '', '2025-09-17 09:29:20', 0),
+                                                                                                                                   (15, '侠客行', '阿利法', '金庸', 'jojo', '2025-11-20 17:49:51', '', '2025-11-20 17:49:51', 0),
+                                                                                                                                   (16, '狗哥的一生', 'fasdf', 'afdas', 'afs', '2025-11-20 17:50:31', '', '2025-11-20 17:50:31', 0);
 
 -- 导出  表 bookshop.cart_item 结构
 CREATE TABLE IF NOT EXISTS `cart_item` (
                                            `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键ID',
                                            `user_id` bigint NOT NULL COMMENT '用户ID',
                                            `book_id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '书籍SKU ID',
+    `book_name` varchar(50) NOT NULL COMMENT '书籍名称',
     `spec_id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '书籍规格ID',
+    `spec_name` varchar(32) NOT NULL COMMENT '书籍规格',
     `quantity` int NOT NULL DEFAULT '1' COMMENT '书籍数量',
     `price` decimal(10,2) NOT NULL COMMENT '加购时单价',
     `selected` tinyint NOT NULL DEFAULT '1' COMMENT '是否选中（1=是，0=否）',
@@ -57,9 +59,12 @@ CREATE TABLE IF NOT EXISTS `cart_item` (
     PRIMARY KEY (`id`),
     UNIQUE KEY `uk_user_sku_spec` (`user_id`,`book_id`,`spec_id`) USING BTREE COMMENT '避免重复加购同一商品同一规格',
     KEY `idx_user_id` (`user_id`) COMMENT '用户维度查询索引'
-    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='购物车表';
+    ) ENGINE=InnoDB AUTO_INCREMENT=1996474728498409474 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='购物车表';
 
--- 正在导出表  bookshop.cart_item 的数据：~0 rows (大约)
+-- 正在导出表  bookshop.cart_item 的数据：~2 rows (大约)
+INSERT INTO `cart_item` (`id`, `user_id`, `book_id`, `book_name`, `spec_id`, `spec_name`, `quantity`, `price`, `selected`, `add_time`, `update_time`, `is_deleted`) VALUES
+                                                                                                                                                                        (1996120947361386498, 2, '1', '三国演绎', '1', '默认规格1', 1, 1.00, 0, '2025-12-03 15:34:55', '2025-12-04 15:32:05', 1),
+                                                                                                                                                                        (1996474728498409473, 2, '3', '卖包子的小蘑菇', '1', '默认规格', 1, 1.00, 0, '2025-12-04 15:00:43', '2025-12-04 15:00:43', 1);
 
 -- 导出  表 bookshop.meal 结构
 CREATE TABLE IF NOT EXISTS `meal` (
@@ -89,19 +94,75 @@ INSERT INTO `meal` (`id`, `dishes_name`, `dishes_kind`, `dishes_user`, `chose_co
 
 -- 导出  表 bookshop.order 结构
 CREATE TABLE IF NOT EXISTS `order` (
-                                       `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
-                                       `book_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '0' COMMENT '书名',
-    `description` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '' COMMENT '描述',
-    `author` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '' COMMENT '作者',
-    `creater` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '' COMMENT '创建人',
-    `create_time` datetime NOT NULL COMMENT '创建时间',
-    `updater` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '' COMMENT '更新人',
-    `update_time` datetime NOT NULL COMMENT '更新时间',
-    `is_delete` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '' COMMENT '是否删除',
-    PRIMARY KEY (`id`) USING BTREE
-    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci AVG_ROW_LENGTH=1 ROW_FORMAT=COMPRESSED;
+                                       `order_id` bigint NOT NULL AUTO_INCREMENT COMMENT '订单编号（主键，规则：时间戳+随机数，如202512041000001234）',
+                                       `user_id` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '下单用户ID（关联用户表user_id）',
+    `order_status` tinyint NOT NULL DEFAULT '0' COMMENT '订单状态：0-待付款 1-待发货 2-待收货 3-已完成 4-已取消 5-退款中 6-已退款',
+    `total_amount` decimal(10,2) NOT NULL COMMENT '订单总金额（所有图书金额之和）',
+    `pay_amount` decimal(10,2) NOT NULL COMMENT '实际支付金额（扣除优惠券/满减后）',
+    `discount_amount` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '优惠金额（优惠券+满减等）',
+    `freight` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '运费（满额包邮则为0）',
+    `pay_type` tinyint DEFAULT NULL COMMENT '支付方式：1-微信 2-支付宝 3-线下支付',
+    `pay_time` datetime DEFAULT NULL COMMENT '支付时间（未支付则为NULL）',
+    `consignee` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '收货人姓名',
+    `phone` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '收货人电话',
+    `address` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '收货地址',
+    `cancel_reason` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '取消原因（仅状态为4时填写）',
+    `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '订单创建时间',
+    `creater` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'CURRENT_TIMESTAMP' COMMENT '订单创建人',
+    `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '订单更新时间',
+    `updater` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'CURRENT_TIMESTAMP' COMMENT '更新者',
+    `is_delete` tinyint NOT NULL DEFAULT (0) COMMENT '是否删除',
+    PRIMARY KEY (`order_id`),
+    KEY `idx_user_id` (`user_id`) COMMENT '按用户ID查询订单的索引',
+    KEY `idx_order_status` (`order_status`) COMMENT '按订单状态筛选的索引',
+    KEY `idx_create_time` (`create_time`) COMMENT '按创建时间查询的索引'
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='书店订单主表';
 
 -- 正在导出表  bookshop.order 的数据：~0 rows (大约)
+
+-- 导出  表 bookshop.order_item 结构
+CREATE TABLE IF NOT EXISTS `order_item` (
+                                            `item_id` bigint NOT NULL AUTO_INCREMENT COMMENT '明细ID（主键）',
+                                            `order_id` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '关联订单主表ID',
+    `isbn` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '图书ISBN编码（关联图书表isbn）',
+    `book_name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '图书名称（冗余存储，避免图书表修改后订单名称变化）',
+    `book_price` decimal(10,2) NOT NULL COMMENT '图书单价（下单时的价格，冗余存储）',
+    `quantity` int NOT NULL COMMENT '购买数量',
+    `subtotal` decimal(10,2) NOT NULL COMMENT '该图书小计金额（book_price * quantity）',
+    `discount` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '该图书单独优惠金额（如单本折扣）',
+    `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '明细创建时间',
+    `creater` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '创建人',
+    `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+    `updater` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '更新人',
+    `is_delete` tinyint DEFAULT NULL COMMENT '是否删除',
+    PRIMARY KEY (`item_id`),
+    KEY `idx_order_id` (`order_id`) COMMENT '按订单ID查询明细的索引',
+    KEY `idx_isbn` (`isbn`) COMMENT '按ISBN查询图书订单的索引'
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='书店订单明细表';
+
+-- 正在导出表  bookshop.order_item 的数据：~0 rows (大约)
+
+-- 导出  表 bookshop.order_pay 结构
+CREATE TABLE IF NOT EXISTS `order_pay` (
+                                           `pay_id` bigint NOT NULL AUTO_INCREMENT COMMENT '支付记录ID（主键）',
+                                           `order_id` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '关联订单ID',
+    `pay_no` varchar(64) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '第三方支付流水号（微信/支付宝返回）',
+    `pay_status` tinyint NOT NULL DEFAULT '0' COMMENT '支付状态：0-支付中 1-支付成功 2-支付失败',
+    `pay_amount` decimal(10,2) NOT NULL COMMENT '支付金额',
+    `pay_time` datetime DEFAULT NULL COMMENT '支付完成时间',
+    `refund_amount` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '退款金额（未退款则为0）',
+    `refund_time` datetime DEFAULT NULL COMMENT '退款时间',
+    `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '支付记录创建时间',
+    `creater` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'CURRENT_TIMESTAMP' COMMENT '创建者',
+    `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '支付记录更新时间',
+    `updater` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'CURRENT_TIMESTAMP' COMMENT '更新者',
+    `is_delete` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'CURRENT_TIMESTAMP' COMMENT '是否删除',
+    PRIMARY KEY (`pay_id`),
+    KEY `idx_order_id` (`order_id`) COMMENT '按订单ID查询支付记录的索引',
+    KEY `idx_pay_no` (`pay_no`) COMMENT '按第三方流水号对账的索引'
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='书店订单支付记录表';
+
+-- 正在导出表  bookshop.order_pay 的数据：~0 rows (大约)
 
 -- 导出  表 bookshop.permission 结构
 CREATE TABLE IF NOT EXISTS `permission` (

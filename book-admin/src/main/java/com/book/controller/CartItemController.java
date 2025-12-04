@@ -110,6 +110,7 @@ public class CartItemController  {
      */
     @PutMapping("update")
     public CommonResult update(@RequestBody CartItem cartItem) {
+        cartItem.setUpdateTime(LocalDateTime.now());
         return success(this.cartItemService.updateById(cartItem));
     }
 

@@ -7,10 +7,10 @@ import com.book.service.OrderService;
 import org.springframework.stereotype.Service;
 
 /**
- * (Order)表服务实现类
+ * 书店订单主表(Order)表服务实现类
  *
  * @author jojo思密达
- * @since 2025-04-15 12:31:55
+ * @since 2025-12-04 16:46:41
  */
 @Service("orderService")
 public class OrderServiceImpl extends ServiceImpl<OrderDao, Order> implements OrderService {
