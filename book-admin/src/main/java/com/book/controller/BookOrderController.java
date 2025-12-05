@@ -2,16 +2,22 @@ package com.book.controller;
 
 
 
+import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.book.entity.BookOrder;
 import com.book.service.BookOrderService;
+import com.book.utils.HttpRequestUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.web.bind.annotation.*;
 import com.book.common.CommonResult;
+
+import static com.book.common.CommonResult.failed;
 import static com.book.common.CommonResult.success;
 import com.book.request.BasePageReq;
 
@@ -29,6 +35,8 @@ public class BookOrderController  {
      */
     @Resource
     private BookOrderService bookOrderService;
+    @Autowired
+    private HttpRequestUtil httpRequestUtil;
 
     /**
      * 分页查询所有数据
@@ -56,12 +64,21 @@ public class BookOrderController  {
     /**
      * 新增数据
      *
-     * @param bookOrder 实体对象
+     * @param bookOrders 实体对象
      * @return 新增结果
      */
     @PostMapping("add")
-    public CommonResult insert(@RequestBody BookOrder bookOrder) {
-        return success(this.bookOrderService.save(bookOrder));
+    public CommonResult insert(@RequestBody List<BookOrder> bookOrders) {
+        if(CollectionUtil.isNotEmpty(bookOrders)){
+            bookOrders.forEach(bookOrder -> {
+                bookOrder.setOrderId(null);
+                bookOrder.setCreater(httpRequestUtil.getCurrentUserName());
+                bookOrder.setCreateTime(LocalDateTime.now());
+                bookOrder.setUpdateTime(LocalDateTime.now());
+            });
+            return success(this.bookOrderService.saveBatch(bookOrders));
+        }
+        return failed();
     }
 
     /**

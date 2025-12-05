@@ -47,7 +47,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 return;
             }
 
-            log.info("JWT认证过滤器");
             //从请求体中获取token
             String token = request.getHeader("Authorization");
             //验证token，跟数据库 用户名 和 密码 进行比对，并且验证redis是否过期
@@ -63,7 +62,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     //创建认证令牌 ，UsernamePasswordAuthenticationToken用于在认证过程中携带用户的凭证信息
                     UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                             userDetails, null, userDetails.getAuthorities());
-                    log.info("token========",authToken);
                     //设置认证令牌
                     SecurityContextHolder.getContext().setAuthentication(authToken);
 
