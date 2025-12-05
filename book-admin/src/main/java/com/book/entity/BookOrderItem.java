@@ -6,13 +6,13 @@ import com.baomidou.mybatisplus.extension.activerecord.Model;
 import java.io.Serializable;
 
 /**
- * 书店订单明细表(OrderItem)表实体类
+ * 书店订单明细表(BookOrderItem)表实体类
  *
  * @author jojo思密达
- * @since 2025-12-04 16:46:42
+ * @since 2025-12-05 10:31:54
  */
 @SuppressWarnings("serial")
-public class OrderItem extends Model<OrderItem> {
+public class BookOrderItem extends Model<BookOrderItem> {
     /**
      * 明细ID（主键）     
      */

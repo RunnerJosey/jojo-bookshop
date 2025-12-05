@@ -6,13 +6,13 @@ import com.baomidou.mybatisplus.extension.activerecord.Model;
 import java.io.Serializable;
 
 /**
- * 书店订单支付记录表(OrderPay)表实体类
+ * 书店订单支付记录表(BookOrderPay)表实体类
  *
  * @author jojo思密达
- * @since 2025-12-04 16:46:42
+ * @since 2025-12-05 10:31:54
  */
 @SuppressWarnings("serial")
-public class OrderPay extends Model<OrderPay> {
+public class BookOrderPay extends Model<BookOrderPay> {
     /**
      * 支付记录ID（主键）     
      */

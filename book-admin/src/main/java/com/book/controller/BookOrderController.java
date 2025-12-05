@@ -4,8 +4,8 @@ package com.book.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.book.entity.OrderItem;
-import com.book.service.OrderItemService;
+import com.book.entity.BookOrder;
+import com.book.service.BookOrderService;
 import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import java.io.Serializable;
@@ -16,19 +16,19 @@ import static com.book.common.CommonResult.success;
 import com.book.request.BasePageReq;
 
 /**
- * 书店订单明细表(OrderItem)表控制层
+ * 书店订单主表(BookOrder)表控制层
  *
  * @author jojo思密达
- * @since 2025-12-04 16:46:42
+ * @since 2025-12-05 10:31:54
  */
 @RestController
-@RequestMapping("orderItem")
-public class OrderItemController  {
+@RequestMapping("bookOrder")
+public class BookOrderController  {
     /**
      * 服务对象
      */
     @Resource
-    private OrderItemService orderItemService;
+    private BookOrderService bookOrderService;
 
     /**
      * 分页查询所有数据
@@ -37,9 +37,9 @@ public class OrderItemController  {
      */
     @GetMapping("selectPage")
     public CommonResult selectAll(BasePageReq req) {
-        Page<OrderItem> page = new Page<>(req.getCurrent(), req.getSize());
-        OrderItem orderItem= new OrderItem ();
-        return success(this.orderItemService.page(page, new QueryWrapper<>(orderItem)));
+        Page<BookOrder> page = new Page<>(req.getCurrent(), req.getSize());
+        BookOrder bookOrder= new BookOrder ();
+        return success(this.bookOrderService.page(page, new QueryWrapper<>(bookOrder)));
     }
 
     /**
@@ -50,29 +50,29 @@ public class OrderItemController  {
      */
     @GetMapping("getById")
     public CommonResult selectOne(@PathVariable Long id) {
-        return success(this.orderItemService.getById(id));
+        return success(this.bookOrderService.getById(id));
     }
 
     /**
      * 新增数据
      *
-     * @param orderItem 实体对象
+     * @param bookOrder 实体对象
      * @return 新增结果
      */
     @PostMapping("add")
-    public CommonResult insert(@RequestBody OrderItem orderItem) {
-        return success(this.orderItemService.save(orderItem));
+    public CommonResult insert(@RequestBody BookOrder bookOrder) {
+        return success(this.bookOrderService.save(bookOrder));
     }
 
     /**
      * 修改数据
      *
-     * @param orderItem 实体对象
+     * @param bookOrder 实体对象
      * @return 修改结果
      */
     @PutMapping("update")
-    public CommonResult update(@RequestBody OrderItem orderItem) {
-        return success(this.orderItemService.updateById(orderItem));
+    public CommonResult update(@RequestBody BookOrder bookOrder) {
+        return success(this.bookOrderService.updateById(bookOrder));
     }
 
     /**
@@ -83,7 +83,7 @@ public class OrderItemController  {
      */
     @DeleteMapping("delete")
     public CommonResult delete(@RequestParam("idList") List<Long> idList) {
-        return success(this.orderItemService.removeByIds(idList));
+        return success(this.bookOrderService.removeByIds(idList));
     }
 }
 
