@@ -73,6 +73,7 @@ public class BookOrderController  {
             bookOrders.forEach(bookOrder -> {
                 bookOrder.setOrderId(null);
                 bookOrder.setCreater(httpRequestUtil.getCurrentUserName());
+                bookOrder.setUserId(httpRequestUtil.getCurrentUserInfo().getId() + "");
                 bookOrder.setCreateTime(LocalDateTime.now());
                 bookOrder.setUpdateTime(LocalDateTime.now());
             });

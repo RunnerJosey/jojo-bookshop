@@ -1,0 +1,94 @@
+{
+  "author" : "jojo思密达",
+  "version" : "1.2.8",
+  "userSecure" : "",
+  "currTypeMapperGroupName" : "Default",
+  "currTemplateGroupName" : "MybatisPlus",
+  "currColumnConfigGroupName" : "Default",
+  "currGlobalConfigGroupName" : "Default",
+  "typeMapper" : {
+    "Default" : {
+      "name" : "Default",
+      "elementList" : [ {
+        "matchType" : "REGEX",
+        "columnType" : "varchar(\\(\\d+\\))?",
+        "javaType" : "java.lang.String"
+      }, {
+        "matchType" : "REGEX",
+        "columnType" : "char(\\(\\d+\\))?",
+        "javaType" : "java.lang.String"
+      }, {
+        "matchType" : "REGEX",
+        "columnType" : "(tiny|medium|long)*text",
+        "javaType" : "java.lang.String"
+      }, {
+        "matchType" : "REGEX",
+        "columnType" : "decimal(\\(\\d+,\\d+\\))?",
+        "javaType" : "java.math.BigDecimal"
+      }, {
+        "matchType" : "ORDINARY",
+        "columnType" : "integer",
+        "javaType" : "java.lang.Integer"
+      }, {
+        "matchType" : "REGEX",
+        "columnType" : "(tiny|small|medium)*int(\\(\\d+\\))?",
+        "javaType" : "java.lang.Integer"
+      }, {
+        "matchType" : "ORDINARY",
+        "columnType" : "int4",
+        "javaType" : "java.lang.Integer"
+      }, {
+        "matchType" : "ORDINARY",
+        "columnType" : "int8",
+        "javaType" : "java.lang.Long"
+      }, {
+        "matchType" : "REGEX",
+        "columnType" : "bigint(\\(\\d+\\))?",
+        "javaType" : "java.lang.Long"
+      }, {
+        "matchType" : "ORDINARY",
+        "columnType" : "date",
+        "javaType" : "java.util.Date"
+      }, {
+        "matchType" : "ORDINARY",
+        "columnType" : "datetime",
+        "javaType" : "java.time.LocalDateTime"
+      }, {
+        "matchType" : "ORDINARY",
+        "columnType" : "timestamp",
+        "javaType" : "java.util.Date"
+      }, {
+        "matchType" : "ORDINARY",
+        "columnType" : "time",
+        "javaType" : "java.time.LocalTime"
+      }, {
+        "matchType" : "ORDINARY",
+        "columnType" : "boolean",
+        "javaType" : "java.lang.Boolean"
+      } ]
+    }
+  },
+  "template" : {
+    "MybatisPlus" : {
+      "name" : "MybatisPlus",
+      "elementList" : [ {
+        "name" : "controller.java.vm",
+        "code" : "##导入宏定义\n$!{define.vm}\n\n##设置表后缀（宏定义）\n#setTableSuffix(\"Controller\")\n\n##保存文件（宏定义）\n#save(\"/controller\", \"Controller.java\")\n\n##包路径（宏定义）\n#setPackageSuffix(\"controller\")\n\n##定义服务名\n#set($serviceName = $!tool.append($!tool.firstLowerCase($!tableInfo.name), \"Service\"))\n\n##定义实体对象名\n#set($entityName = $!tool.firstLowerCase($!tableInfo.name))\n\nimport com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;\nimport com.baomidou.mybatisplus.extension.plugins.pagination.Page;\nimport $!{tableInfo.savePackageName}.entity.$!tableInfo.name;\nimport $!{tableInfo.savePackageName}.service.$!{tableInfo.name}Service;\nimport org.springframework.web.bind.annotation.*;\nimport javax.annotation.Resource;\nimport java.io.Serializable;\nimport java.util.List;\nimport org.springframework.web.bind.annotation.*;\nimport com.book.common.CommonResult;\nimport static com.book.common.CommonResult.success;\nimport com.book.request.BasePageReq;\n\n##表注释（宏定义）\n#tableComment(\"表控制层\")\n@RestController\n@RequestMapping(\"$!tool.firstLowerCase($!tableInfo.name)\")\npublic class $!{tableName}  {\n    /**\n     * 服务对象\n     */\n    @Resource\n    private $!{tableInfo.name}Service $!{serviceName};\n\n    /**\n     * 分页查询所有数据\n     *\n     * @return 所有数据\n     */\n    @GetMapping(\"selectPage\")\n    public CommonResult selectAll(BasePageReq req) {\n        Page<$!tableInfo.name> page = new Page<>(req.getCurrent(), req.getSize());\n        $!tableInfo.name $!entityName= new $!tableInfo.name ();\n        return success(this.$!{serviceName}.page(page, new QueryWrapper<>($!entityName)));\n    }\n\n    /**\n     * 通过主键查询单条数据\n     *\n     * @param id 主键\n     * @return 单条数据\n     */\n    @GetMapping(\"getById\")\n    public CommonResult selectOne(@PathVariable Long id) {\n        return success(this.$!{serviceName}.getById(id));\n    }\n\n    /**\n     * 新增数据\n     *\n     * @param $!entityName 实体对象\n     * @return 新增结果\n     */\n    @PostMapping(\"add\")\n    public CommonResult insert(@RequestBody $!tableInfo.name $!entityName) {\n        return success(this.$!{serviceName}.save($!entityName));\n    }\n\n    /**\n     * 修改数据\n     *\n     * @param $!entityName 实体对象\n     * @return 修改结果\n     */\n    @PutMapping(\"update\")\n    public CommonResult update(@RequestBody $!tableInfo.name $!entityName) {\n        return success(this.$!{serviceName}.updateById($!entityName));\n    }\n\n    /**\n     * 删除数据\n     *\n     * @param idList 主键结合\n     * @return 删除结果\n     */\n    @DeleteMapping(\"delete\")\n    public CommonResult delete(@RequestParam(\"idList\") List<Long> idList) {\n        return success(this.$!{serviceName}.removeByIds(idList));\n    }\n}\n"
+      }, {
+        "name" : "dao.java.vm",
+        "code" : "##导入宏定义\n$!{define.vm}\n\n##设置表后缀（宏定义）\n#setTableSuffix(\"Dao\")\n\n##保存文件（宏定义）\n#save(\"/dao\", \"Dao.java\")\n\n##包路径（宏定义）\n#setPackageSuffix(\"dao\")\n\nimport com.baomidou.mybatisplus.core.mapper.BaseMapper;\nimport $!{tableInfo.savePackageName}.entity.$!tableInfo.name;\n\n##表注释（宏定义）\n#tableComment(\"表数据库访问层\")\npublic interface $!{tableName} extends BaseMapper<$!tableInfo.name> {\n\n}\n"
+      }, {
+        "name" : "entity.java.vm",
+        "code" : "##导入宏定义\n$!{define.vm}\n\n##保存文件（宏定义）\n#save(\"/entity\", \".java\")\n\n##包路径（宏定义）\n#setPackageSuffix(\"entity\")\n\n##自动导入包（全局变量）\n$!{autoImport.vm}\nimport com.baomidou.mybatisplus.extension.activerecord.Model;\nimport java.io.Serializable;\n\n##表注释（宏定义）\n#tableComment(\"表实体类\")\n@SuppressWarnings(\"serial\")\npublic class $!{tableInfo.name} extends Model<$!{tableInfo.name}> {\n#foreach($column in $tableInfo.fullColumn)\n    #if(${column.comment})    /**\n     * ${column.comment}#end\n     \n     */\n    private $!{tool.getClsNameByFullName($column.type)} $!{column.name};\n#end\n\n#foreach($column in $tableInfo.fullColumn)\n#getSetMethod($column)\n#end\n\n#foreach($column in $tableInfo.pkColumn)\n    \n    #break\n#end\n}\n"
+      }, {
+        "name" : "service.java.vm",
+        "code" : "##导入宏定义\n$!{define.vm}\n\n##设置表后缀（宏定义）\n#setTableSuffix(\"Service\")\n\n##保存文件（宏定义）\n#save(\"/service\", \"Service.java\")\n\n##包路径（宏定义）\n#setPackageSuffix(\"service\")\n\nimport com.baomidou.mybatisplus.extension.service.IService;\nimport $!{tableInfo.savePackageName}.entity.$!tableInfo.name;\n\n##表注释（宏定义）\n#tableComment(\"表服务接口\")\npublic interface $!{tableName} extends IService<$!tableInfo.name> {\n\n}\n"
+      }, {
+        "name" : "serviceImpl.java.vm",
+        "code" : "##导入宏定义\n$!{define.vm}\n\n##设置表后缀（宏定义）\n#setTableSuffix(\"ServiceImpl\")\n\n##保存文件（宏定义）\n#save(\"/service/impl\", \"ServiceImpl.java\")\n\n##包路径（宏定义）\n#setPackageSuffix(\"service.impl\")\n\nimport com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;\nimport $!{tableInfo.savePackageName}.dao.$!{tableInfo.name}Dao;\nimport $!{tableInfo.savePackageName}.entity.$!{tableInfo.name};\nimport $!{tableInfo.savePackageName}.service.$!{tableInfo.name}Service;\nimport org.springframework.stereotype.Service;\n\n##表注释（宏定义）\n#tableComment(\"表服务实现类\")\n@Service(\"$!tool.firstLowerCase($tableInfo.name)Service\")\npublic class $!{tableName} extends ServiceImpl<$!{tableInfo.name}Dao, $!{tableInfo.name}> implements $!{tableInfo.name}Service {\n\n}\n"
+      } ]
+    }
+  },
+  "columnConfig" : { },
+  "globalConfig" : { }
+}
