@@ -19,7 +19,7 @@ public class BookUserAddress extends Model<BookUserAddress> {
     /**
      * 关联用户ID（外键，关联用户表）     
      */
-    private String userId;
+    private Long userId;
     /**
      * 收货人姓名     
      */
@@ -74,11 +74,11 @@ public class BookUserAddress extends Model<BookUserAddress> {
         this.addressId = addressId;
     }
 
-    public String getUserId() {
+    public Long getUserId() {
         return userId;
     }
 
-    public void setUserId(String userId) {
+    public void setUserId(Long userId) {
         this.userId = userId;
     }
 

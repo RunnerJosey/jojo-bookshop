@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.book.entity.BookUserAddress;
 import com.book.service.BookUserAddressService;
+import com.book.utils.HttpRequestUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import java.io.Serializable;
@@ -29,6 +31,8 @@ public class BookUserAddressController  {
      */
     @Resource
     private BookUserAddressService bookUserAddressService;
+    @Autowired
+    private HttpRequestUtil httpRequestUtil;
 
     /**
      * 分页查询所有数据
@@ -61,6 +65,7 @@ public class BookUserAddressController  {
      */
     @PostMapping("add")
     public CommonResult insert(@RequestBody BookUserAddress bookUserAddress) {
+        bookUserAddress.setUserId(httpRequestUtil.getCurrentUserInfo().getId());
         return success(this.bookUserAddressService.save(bookUserAddress));
     }
 
