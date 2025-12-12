@@ -15,7 +15,7 @@ public class BookUserAddress extends Model<BookUserAddress> {
     /**
      * 地址ID（主键，规则：时间戳+随机数）     
      */
-    private String addressId;
+    private Long addressId;
     /**
      * 关联用户ID（外键，关联用户表）     
      */
@@ -66,11 +66,11 @@ public class BookUserAddress extends Model<BookUserAddress> {
     private Integer isDeleted;
 
 
-    public String getAddressId() {
+    public Long getAddressId() {
         return addressId;
     }
 
-    public void setAddressId(String addressId) {
+    public void setAddressId(Long addressId) {
         this.addressId = addressId;
     }
 

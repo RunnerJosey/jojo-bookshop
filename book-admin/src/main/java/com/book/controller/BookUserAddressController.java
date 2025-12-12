@@ -22,7 +22,7 @@ import com.book.request.BasePageReq;
  * @since 2025-12-08 17:46:05
  */
 @RestController
-@RequestMapping("bookUserAddress")
+@RequestMapping("address")
 public class BookUserAddressController  {
     /**
      * 服务对象
