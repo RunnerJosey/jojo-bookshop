@@ -42,6 +42,100 @@ INSERT INTO `book` (`id`, `book_name`, `introduce`, `author`, `creater`, `create
                                                                                                                                    (15, '侠客行', '阿利法', '金庸', 'jojo', '2025-11-20 17:49:51', '', '2025-11-20 17:49:51', 0),
                                                                                                                                    (16, '狗哥的一生', 'fasdf', 'afdas', 'afs', '2025-11-20 17:50:31', '', '2025-11-20 17:50:31', 0);
 
+-- 导出  表 bookshop.book_order 结构
+CREATE TABLE IF NOT EXISTS `book_order` (
+                                            `order_id` bigint NOT NULL AUTO_INCREMENT COMMENT '订单编号（主键，规则：时间戳+随机数，如202512041000001234）',
+                                            `user_id` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '下单用户ID（关联用户表user_id）',
+    `order_status` tinyint NOT NULL DEFAULT '0' COMMENT '订单状态：0-待付款 1-待发货 2-待收货 3-已完成 4-已取消 5-退款中 6-已退款',
+    `total_amount` decimal(10,2) NOT NULL COMMENT '订单总金额（所有图书金额之和）',
+    `pay_amount` decimal(10,2) NOT NULL COMMENT '实际支付金额（扣除优惠券/满减后）',
+    `discount_amount` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '优惠金额（优惠券+满减等）',
+    `freight` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '运费（满额包邮则为0）',
+    `pay_type` tinyint DEFAULT NULL COMMENT '支付方式：1-微信 2-支付宝 3-线下支付',
+    `pay_time` datetime DEFAULT NULL COMMENT '支付时间（未支付则为NULL）',
+    `consignee` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '收货人姓名',
+    `phone` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '收货人电话',
+    `address` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '收货地址',
+    `cancel_reason` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '取消原因（仅状态为4时填写）',
+    `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '订单创建时间',
+    `creater` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'CURRENT_TIMESTAMP' COMMENT '订单创建人',
+    `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '订单更新时间',
+    `updater` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'CURRENT_TIMESTAMP' COMMENT '更新者',
+    `is_delete` tinyint NOT NULL DEFAULT (0) COMMENT '是否删除',
+    PRIMARY KEY (`order_id`),
+    KEY `idx_user_id` (`user_id`) COMMENT '按用户ID查询订单的索引',
+    KEY `idx_order_status` (`order_status`) COMMENT '按订单状态筛选的索引',
+    KEY `idx_create_time` (`create_time`) COMMENT '按创建时间查询的索引'
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='书店订单主表';
+
+-- 正在导出表  bookshop.book_order 的数据：~0 rows (大约)
+
+-- 导出  表 bookshop.book_order_item 结构
+CREATE TABLE IF NOT EXISTS `book_order_item` (
+                                                 `item_id` bigint NOT NULL AUTO_INCREMENT COMMENT '明细ID（主键）',
+                                                 `order_id` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '关联订单主表ID',
+    `isbn` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '图书ISBN编码（关联图书表isbn）',
+    `book_name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '图书名称（冗余存储，避免图书表修改后订单名称变化）',
+    `book_price` decimal(10,2) NOT NULL COMMENT '图书单价（下单时的价格，冗余存储）',
+    `quantity` int NOT NULL COMMENT '购买数量',
+    `subtotal` decimal(10,2) NOT NULL COMMENT '该图书小计金额（book_price * quantity）',
+    `discount` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '该图书单独优惠金额（如单本折扣）',
+    `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '明细创建时间',
+    `creater` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '创建人',
+    `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+    `updater` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '更新人',
+    `is_delete` tinyint DEFAULT NULL COMMENT '是否删除',
+    PRIMARY KEY (`item_id`),
+    KEY `idx_order_id` (`order_id`) COMMENT '按订单ID查询明细的索引',
+    KEY `idx_isbn` (`isbn`) COMMENT '按ISBN查询图书订单的索引'
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='书店订单明细表';
+
+-- 正在导出表  bookshop.book_order_item 的数据：~0 rows (大约)
+
+-- 导出  表 bookshop.book_order_pay 结构
+CREATE TABLE IF NOT EXISTS `book_order_pay` (
+                                                `pay_id` bigint NOT NULL AUTO_INCREMENT COMMENT '支付记录ID（主键）',
+                                                `order_id` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '关联订单ID',
+    `pay_no` varchar(64) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '第三方支付流水号（微信/支付宝返回）',
+    `pay_status` tinyint NOT NULL DEFAULT '0' COMMENT '支付状态：0-支付中 1-支付成功 2-支付失败',
+    `pay_amount` decimal(10,2) NOT NULL COMMENT '支付金额',
+    `pay_time` datetime DEFAULT NULL COMMENT '支付完成时间',
+    `refund_amount` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '退款金额（未退款则为0）',
+    `refund_time` datetime DEFAULT NULL COMMENT '退款时间',
+    `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '支付记录创建时间',
+    `creater` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'CURRENT_TIMESTAMP' COMMENT '创建者',
+    `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '支付记录更新时间',
+    `updater` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'CURRENT_TIMESTAMP' COMMENT '更新者',
+    `is_delete` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'CURRENT_TIMESTAMP' COMMENT '是否删除',
+    PRIMARY KEY (`pay_id`),
+    KEY `idx_order_id` (`order_id`) COMMENT '按订单ID查询支付记录的索引',
+    KEY `idx_pay_no` (`pay_no`) COMMENT '按第三方流水号对账的索引'
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='书店订单支付记录表';
+
+-- 正在导出表  bookshop.book_order_pay 的数据：~0 rows (大约)
+
+-- 导出  表 bookshop.book_user_address 结构
+CREATE TABLE IF NOT EXISTS `book_user_address` (
+                                                   `address_id` bigint NOT NULL AUTO_INCREMENT COMMENT '地址ID（主键，规则：时间戳+随机数）',
+                                                   `user_id` bigint NOT NULL DEFAULT (0) COMMENT '关联用户ID（外键，关联用户表）',
+    `consignee` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '收货人姓名',
+    `phone` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '收货人手机号（需做脱敏存储，如138****1234）',
+    `province_name` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '省份名称（冗余存储，如广东省）',
+    `city_name` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '城市名称（如广州市）',
+    `district_name` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '区县名称（如天河区）',
+    `detail_address` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '详细地址（如XX街道XX小区XX栋XX单元）',
+    `address_label` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '地址标签（如家庭、公司、学校）',
+    `is_default` tinyint NOT NULL DEFAULT '0' COMMENT '是否默认地址：0-否 1-是（一个用户仅能有一个默认地址）',
+    `create_time` datetime NOT NULL COMMENT '创建时间',
+    `update_time` datetime NOT NULL COMMENT '更新时间',
+    `is_deleted` tinyint NOT NULL DEFAULT '0' COMMENT '逻辑删除：0-未删除 1-已删除',
+    PRIMARY KEY (`address_id`),
+    KEY `idx_user_id` (`user_id`) COMMENT '按用户ID查询地址的索引',
+    KEY `idx_is_default` (`is_default`) COMMENT '查询默认地址的索引'
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='书店用户收货地址表';
+
+-- 正在导出表  bookshop.book_user_address 的数据：~0 rows (大约)
+
 -- 导出  表 bookshop.cart_item 结构
 CREATE TABLE IF NOT EXISTS `cart_item` (
                                            `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键ID',
@@ -91,78 +185,6 @@ INSERT INTO `meal` (`id`, `dishes_name`, `dishes_kind`, `dishes_user`, `chose_co
                                                                                                                                                            (5, '筒骨粉', '潮汕风味粉面', 'josey', NULL, '2025-09-18 17:16:47', 'josey', '2025-09-18 17:16:45', 'josey', NULL),
                                                                                                                                                            (6, '猪脚饭', '潮汕猪脚饭', 'josey', NULL, '2025-09-18 17:16:48', 'josey', '2025-09-18 17:16:45', 'josey', NULL),
                                                                                                                                                            (7, '外卖', '平台经济', 'josey', NULL, '2025-09-18 17:16:48', 'josey', '2025-09-18 17:16:46', 'josey', NULL);
-
--- 导出  表 bookshop.order 结构
-CREATE TABLE IF NOT EXISTS `order` (
-                                       `order_id` bigint NOT NULL AUTO_INCREMENT COMMENT '订单编号（主键，规则：时间戳+随机数，如202512041000001234）',
-                                       `user_id` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '下单用户ID（关联用户表user_id）',
-    `order_status` tinyint NOT NULL DEFAULT '0' COMMENT '订单状态：0-待付款 1-待发货 2-待收货 3-已完成 4-已取消 5-退款中 6-已退款',
-    `total_amount` decimal(10,2) NOT NULL COMMENT '订单总金额（所有图书金额之和）',
-    `pay_amount` decimal(10,2) NOT NULL COMMENT '实际支付金额（扣除优惠券/满减后）',
-    `discount_amount` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '优惠金额（优惠券+满减等）',
-    `freight` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '运费（满额包邮则为0）',
-    `pay_type` tinyint DEFAULT NULL COMMENT '支付方式：1-微信 2-支付宝 3-线下支付',
-    `pay_time` datetime DEFAULT NULL COMMENT '支付时间（未支付则为NULL）',
-    `consignee` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '收货人姓名',
-    `phone` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '收货人电话',
-    `address` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '收货地址',
-    `cancel_reason` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '取消原因（仅状态为4时填写）',
-    `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '订单创建时间',
-    `creater` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'CURRENT_TIMESTAMP' COMMENT '订单创建人',
-    `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '订单更新时间',
-    `updater` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'CURRENT_TIMESTAMP' COMMENT '更新者',
-    `is_delete` tinyint NOT NULL DEFAULT (0) COMMENT '是否删除',
-    PRIMARY KEY (`order_id`),
-    KEY `idx_user_id` (`user_id`) COMMENT '按用户ID查询订单的索引',
-    KEY `idx_order_status` (`order_status`) COMMENT '按订单状态筛选的索引',
-    KEY `idx_create_time` (`create_time`) COMMENT '按创建时间查询的索引'
-    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='书店订单主表';
-
--- 正在导出表  bookshop.order 的数据：~0 rows (大约)
-
--- 导出  表 bookshop.order_item 结构
-CREATE TABLE IF NOT EXISTS `order_item` (
-                                            `item_id` bigint NOT NULL AUTO_INCREMENT COMMENT '明细ID（主键）',
-                                            `order_id` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '关联订单主表ID',
-    `isbn` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '图书ISBN编码（关联图书表isbn）',
-    `book_name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '图书名称（冗余存储，避免图书表修改后订单名称变化）',
-    `book_price` decimal(10,2) NOT NULL COMMENT '图书单价（下单时的价格，冗余存储）',
-    `quantity` int NOT NULL COMMENT '购买数量',
-    `subtotal` decimal(10,2) NOT NULL COMMENT '该图书小计金额（book_price * quantity）',
-    `discount` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '该图书单独优惠金额（如单本折扣）',
-    `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '明细创建时间',
-    `creater` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '创建人',
-    `update_time` datetime DEFAULT NULL COMMENT '更新时间',
-    `updater` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '更新人',
-    `is_delete` tinyint DEFAULT NULL COMMENT '是否删除',
-    PRIMARY KEY (`item_id`),
-    KEY `idx_order_id` (`order_id`) COMMENT '按订单ID查询明细的索引',
-    KEY `idx_isbn` (`isbn`) COMMENT '按ISBN查询图书订单的索引'
-    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='书店订单明细表';
-
--- 正在导出表  bookshop.order_item 的数据：~0 rows (大约)
-
--- 导出  表 bookshop.order_pay 结构
-CREATE TABLE IF NOT EXISTS `order_pay` (
-                                           `pay_id` bigint NOT NULL AUTO_INCREMENT COMMENT '支付记录ID（主键）',
-                                           `order_id` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '关联订单ID',
-    `pay_no` varchar(64) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '第三方支付流水号（微信/支付宝返回）',
-    `pay_status` tinyint NOT NULL DEFAULT '0' COMMENT '支付状态：0-支付中 1-支付成功 2-支付失败',
-    `pay_amount` decimal(10,2) NOT NULL COMMENT '支付金额',
-    `pay_time` datetime DEFAULT NULL COMMENT '支付完成时间',
-    `refund_amount` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '退款金额（未退款则为0）',
-    `refund_time` datetime DEFAULT NULL COMMENT '退款时间',
-    `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '支付记录创建时间',
-    `creater` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'CURRENT_TIMESTAMP' COMMENT '创建者',
-    `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '支付记录更新时间',
-    `updater` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'CURRENT_TIMESTAMP' COMMENT '更新者',
-    `is_delete` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'CURRENT_TIMESTAMP' COMMENT '是否删除',
-    PRIMARY KEY (`pay_id`),
-    KEY `idx_order_id` (`order_id`) COMMENT '按订单ID查询支付记录的索引',
-    KEY `idx_pay_no` (`pay_no`) COMMENT '按第三方流水号对账的索引'
-    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='书店订单支付记录表';
-
--- 正在导出表  bookshop.order_pay 的数据：~0 rows (大约)
 
 -- 导出  表 bookshop.permission 结构
 CREATE TABLE IF NOT EXISTS `permission` (
