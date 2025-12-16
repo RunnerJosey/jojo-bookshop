@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.book.dao.BookUserAddressDao;
 import com.book.entity.BookUserAddress;
 import com.book.service.BookUserAddressService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -14,6 +15,15 @@ import org.springframework.stereotype.Service;
  */
 @Service("bookUserAddressService")
 public class BookUserAddressServiceImpl extends ServiceImpl<BookUserAddressDao, BookUserAddress> implements BookUserAddressService {
+
+    @Autowired
+    private BookUserAddressDao bookUserAddressDao;
+
+
+    public boolean updateById(BookUserAddress bookUserAddress) {
+        return bookUserAddressDao.updateById(bookUserAddress) == 1 ? true : false;
+    }
+
 
 }
 

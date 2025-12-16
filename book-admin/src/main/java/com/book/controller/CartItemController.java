@@ -3,6 +3,8 @@ package com.book.controller;
 
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.util.ObjectUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.book.entity.CartItem;
@@ -86,6 +88,7 @@ public class CartItemController  {
      */
     @PostMapping("add")
     public CommonResult insert(@RequestBody CartItem cartItem) {
+        //赋值
         cartItem.setAddTime(LocalDateTime.now());
         cartItem.setUpdateTime(LocalDateTime.now());
         cartItem.setIsDeleted(YesOrNoEnum.YES.getCode());
@@ -99,7 +102,18 @@ public class CartItemController  {
         cartItem.setSelected(cartItem.getSelected());
         cartItem.setPrice(new BigDecimal("1"));
         cartItem.setBookName(cartItem.getBookName());
-        return success(this.cartItemService.save(cartItem));
+        //查历史
+        LambdaQueryWrapper<CartItem> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(CartItem::getBookId, cartItem.getBookId())
+                .eq(CartItem::getSpecId, cartItem.getSpecId())
+                .eq(CartItem::getUserId, httpRequestUtil.getCurrentUserInfo().getId())
+                .last(" limit 1");
+        CartItem entityCartItem = cartItemService.getOne((queryWrapper));
+        if(ObjectUtil.isEmpty(entityCartItem)){
+            return success(this.cartItemService.save(cartItem));
+        }
+        entityCartItem.setQuantity(entityCartItem.getQuantity()+cartItem.getQuantity());
+        return success(this.cartItemService.updateById(entityCartItem));
     }
 
     /**

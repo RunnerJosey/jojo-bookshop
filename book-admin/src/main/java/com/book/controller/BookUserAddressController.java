@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.web.bind.annotation.*;
 import com.book.common.CommonResult;
@@ -66,6 +67,8 @@ public class BookUserAddressController  {
     @PostMapping("add")
     public CommonResult insert(@RequestBody BookUserAddress bookUserAddress) {
         bookUserAddress.setUserId(httpRequestUtil.getCurrentUserInfo().getId());
+        bookUserAddress.setCreateTime(LocalDateTime.now());
+        bookUserAddress.setUpdateTime(LocalDateTime.now());
         return success(this.bookUserAddressService.save(bookUserAddress));
     }
 
