@@ -3,18 +3,24 @@ package com.book.controller;
 
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.book.entity.BookOrder;
+import com.book.entity.UserAddress;
+import com.book.enums.OrderStatusEnum;
+import com.book.exception.BusinessException;
 import com.book.service.BookOrderService;
+import com.book.service.CartItemService;
+import com.book.service.UserAddressService;
 import com.book.utils.HttpRequestUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
-import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
-import org.springframework.web.bind.annotation.*;
+import java.util.stream.Collectors;
+
 import com.book.common.CommonResult;
 
 import static com.book.common.CommonResult.failed;
@@ -37,6 +43,10 @@ public class BookOrderController  {
     private BookOrderService bookOrderService;
     @Autowired
     private HttpRequestUtil httpRequestUtil;
+    @Autowired
+    private UserAddressService userAddressService;
+    @Autowired
+    private CartItemService cartItemService;
 
     /**
      * 分页查询所有数据
@@ -47,7 +57,15 @@ public class BookOrderController  {
     public CommonResult selectAll(BasePageReq req) {
         Page<BookOrder> page = new Page<>(req.getCurrent(), req.getSize());
         BookOrder bookOrder= new BookOrder ();
-        return success(this.bookOrderService.page(page, new QueryWrapper<>(bookOrder)));
+        Page<BookOrder> result = this.bookOrderService.page(page, new QueryWrapper<>(bookOrder));
+        //获取书籍信息
+        if(CollectionUtil.isNotEmpty(result.getRecords())){
+//            result.getRecords().forEach(bookOrder -> {
+//                bookOrder.setBookName(bookOrder.getBookId());
+//            });
+        }
+//        result.setRecords();
+        return success(result);
     }
 
     /**
@@ -76,8 +94,21 @@ public class BookOrderController  {
                 bookOrder.setUserId(httpRequestUtil.getCurrentUserInfo().getId() + "");
                 bookOrder.setCreateTime(LocalDateTime.now());
                 bookOrder.setUpdateTime(LocalDateTime.now());
+                bookOrder.setOrderStatus(OrderStatusEnum.WATING_FOR_PAYMENT.getCode());
+                UserAddress userAddress = userAddressService.getById(bookOrder.getAddressId());
+                if(ObjectUtil.isEmpty(userAddress)){
+                    throw new BusinessException(90001,"地址信息为空或者错误");
+                }
+                bookOrder.setConsigneeName(userAddress.getConsigneeName());
+                bookOrder.setConsigneePhone(userAddress.getConsigneePhone());
+                bookOrder.setAddress(userAddress.getProvinceName() + userAddress.getCityName()
+                        + userAddress.getDistrictName() + userAddress.getDetailAddress());
             });
-            return success(this.bookOrderService.saveBatch(bookOrders));
+            //创建订单成功后删除购物车
+            if(this.bookOrderService.saveBatch(bookOrders)){
+                cartItemService.removeByIds(bookOrders.stream().map(BookOrder::getCartItemId).collect(Collectors.toList()));
+            }
+            return success();
         }
         return failed();
     }

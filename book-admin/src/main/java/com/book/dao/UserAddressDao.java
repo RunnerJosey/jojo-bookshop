@@ -1,7 +1,7 @@
 package com.book.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.book.entity.BookUserAddress;
+import com.book.entity.UserAddress;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
@@ -11,7 +11,7 @@ import org.apache.ibatis.annotations.Mapper;
  * @since 2025-12-08 17:46:05
  */
 @Mapper
-public interface BookUserAddressDao extends BaseMapper<BookUserAddress> {
+public interface UserAddressDao extends BaseMapper<UserAddress> {
 
 
 

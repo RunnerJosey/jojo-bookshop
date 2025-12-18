@@ -2,20 +2,29 @@ package com.book.entity;
 
 import java.time.LocalDateTime;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.IdType;
 import java.io.Serializable;
+import lombok.Data;
 
 /**
- * 书店用户收货地址表(BookUserAddress)表实体类
+ * 书店用户收货地址表(UserAddress)表实体类
  *
- * @author jojo思密达
- * @since 2025-12-08 17:46:05
+ * @author bookshop-easycode-template-mybatisplus
+ * @since 2025-12-17 10:09:24
  */
 @SuppressWarnings("serial")
-public class BookUserAddress extends Model<BookUserAddress> {
+@Data
+@TableName("user_address")
+public class UserAddress extends Model<UserAddress> {
+
     /**
-     * 地址ID（主键，规则：时间戳+随机数）     
-     */
-    private Long addressId;
+     * 地址ID（主键，规则：时间戳+随机数）
+     */     
+     @TableId(type = IdType.AUTO)
+     private Long addressId;
+     
     /**
      * 关联用户ID（外键，关联用户表）     
      */
@@ -23,11 +32,11 @@ public class BookUserAddress extends Model<BookUserAddress> {
     /**
      * 收货人姓名     
      */
-    private String consignee;
+    private String consigneeName;
     /**
      * 收货人手机号（需做脱敏存储，如138****1234）     
      */
-    private String phone;
+    private String consigneePhone;
     /**
      * 省份名称（冗余存储，如广东省）     
      */
@@ -82,20 +91,20 @@ public class BookUserAddress extends Model<BookUserAddress> {
         this.userId = userId;
     }
 
-    public String getConsignee() {
-        return consignee;
+    public String getConsigneeName() {
+        return consigneeName;
     }
 
-    public void setConsignee(String consignee) {
-        this.consignee = consignee;
+    public void setConsigneeName(String consigneeName) {
+        this.consigneeName = consigneeName;
     }
 
-    public String getPhone() {
-        return phone;
+    public String getConsigneePhone() {
+        return consigneePhone;
     }
 
-    public void setPhone(String phone) {
-        this.phone = phone;
+    public void setConsigneePhone(String consigneePhone) {
+        this.consigneePhone = consigneePhone;
     }
 
     public String getProvinceName() {

@@ -3,20 +3,29 @@ package com.book.entity;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.IdType;
 import java.io.Serializable;
+import lombok.Data;
 
 /**
  * 书店订单主表(BookOrder)表实体类
  *
- * @author jojo思密达
- * @since 2025-12-05 10:31:54
+ * @author bookshop-easycode-template-mybatisplus
+ * @since 2025-12-17 11:08:51
  */
 @SuppressWarnings("serial")
+@Data
+@TableName("book_order")
 public class BookOrder extends Model<BookOrder> {
+
     /**
-     * 订单编号（主键，规则：时间戳+随机数，如202512041000001234）     
-     */
-    private Long orderId;
+     * 订单编号（主键，规则：时间戳+随机数，如202512041000001234）
+     */     
+     @TableId(type = IdType.AUTO)
+     private Long orderId;
+     
     /**
      * 下单用户ID（关联用户表user_id）     
      */
@@ -26,13 +35,9 @@ public class BookOrder extends Model<BookOrder> {
      */
     private Integer orderStatus;
     /**
-     * 订单总金额（所有图书金额之和）     
+     * 关联的购物车id     
      */
-    private BigDecimal totalAmount;
-    /**
-     * 实际支付金额（扣除优惠券/满减后）     
-     */
-    private BigDecimal payAmount;
+    private Long cartItemId;
     /**
      * 优惠金额（优惠券+满减等）     
      */
@@ -42,21 +47,33 @@ public class BookOrder extends Model<BookOrder> {
      */
     private BigDecimal freight;
     /**
+     * 订单总金额（所有图书金额之和）     
+     */
+    private BigDecimal totalAmount;
+    /**
      * 支付方式：1-微信 2-支付宝 3-线下支付     
      */
     private Integer payType;
+    /**
+     * 实际支付金额（扣除优惠券/满减后）     
+     */
+    private BigDecimal payAmount;
     /**
      * 支付时间（未支付则为NULL）     
      */
     private LocalDateTime payTime;
     /**
+     * 收货地址id     
+     */
+    private Long addressId;
+    /**
      * 收货人姓名     
      */
-    private String consignee;
+    private String consigneeName;
     /**
      * 收货人电话     
      */
-    private String phone;
+    private String consigneePhone;
     /**
      * 收货地址     
      */
@@ -111,20 +128,12 @@ public class BookOrder extends Model<BookOrder> {
         this.orderStatus = orderStatus;
     }
 
-    public BigDecimal getTotalAmount() {
-        return totalAmount;
+    public Long getCartItemId() {
+        return cartItemId;
     }
 
-    public void setTotalAmount(BigDecimal totalAmount) {
-        this.totalAmount = totalAmount;
-    }
-
-    public BigDecimal getPayAmount() {
-        return payAmount;
-    }
-
-    public void setPayAmount(BigDecimal payAmount) {
-        this.payAmount = payAmount;
+    public void setCartItemId(Long cartItemId) {
+        this.cartItemId = cartItemId;
     }
 
     public BigDecimal getDiscountAmount() {
@@ -143,12 +152,28 @@ public class BookOrder extends Model<BookOrder> {
         this.freight = freight;
     }
 
+    public BigDecimal getTotalAmount() {
+        return totalAmount;
+    }
+
+    public void setTotalAmount(BigDecimal totalAmount) {
+        this.totalAmount = totalAmount;
+    }
+
     public Integer getPayType() {
         return payType;
     }
 
     public void setPayType(Integer payType) {
         this.payType = payType;
+    }
+
+    public BigDecimal getPayAmount() {
+        return payAmount;
+    }
+
+    public void setPayAmount(BigDecimal payAmount) {
+        this.payAmount = payAmount;
     }
 
     public LocalDateTime getPayTime() {
@@ -159,20 +184,28 @@ public class BookOrder extends Model<BookOrder> {
         this.payTime = payTime;
     }
 
-    public String getConsignee() {
-        return consignee;
+    public Long getAddressId() {
+        return addressId;
     }
 
-    public void setConsignee(String consignee) {
-        this.consignee = consignee;
+    public void setAddressId(Long addressId) {
+        this.addressId = addressId;
     }
 
-    public String getPhone() {
-        return phone;
+    public String getConsigneeName() {
+        return consigneeName;
     }
 
-    public void setPhone(String phone) {
-        this.phone = phone;
+    public void setConsigneeName(String consigneeName) {
+        this.consigneeName = consigneeName;
+    }
+
+    public String getConsigneePhone() {
+        return consigneePhone;
+    }
+
+    public void setConsigneePhone(String consigneePhone) {
+        this.consigneePhone = consigneePhone;
     }
 
     public String getAddress() {
