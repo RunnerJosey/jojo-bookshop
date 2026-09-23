@@ -53,8 +53,10 @@ public class CartItemController  {
     @GetMapping("selectPage")
     public CommonResult selectAll(BasePageReq req) {
         Page<CartItem> page = new Page<>(req.getCurrent(), req.getSize());
-        CartItem cartItem= new CartItem ();
-        Page<CartItem> cartItemPage = this.cartItemService.page(page, new QueryWrapper<>(cartItem));
+        Long userId = httpRequestUtil.getCurrentUserInfo().getId();
+        QueryWrapper<CartItem> wrapper = new QueryWrapper<>();
+        wrapper.eq("user_id", userId).orderByDesc("add_time");
+        Page<CartItem> cartItemPage = this.cartItemService.page(page, wrapper);
         Page<CartItemResponse> cartItemResponsePage = new Page<>();
         BeanUtil.copyProperties(cartItemPage, cartItemResponsePage);
 

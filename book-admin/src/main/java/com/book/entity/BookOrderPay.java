@@ -2,7 +2,10 @@ package com.book.entity;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import java.io.Serializable;
 
 /**
@@ -14,8 +17,9 @@ import java.io.Serializable;
 @SuppressWarnings("serial")
 public class BookOrderPay extends Model<BookOrderPay> {
     /**
-     * 支付记录ID（主键）     
+     * 支付记录ID（主键）
      */
+    @TableId(value = "pay_id", type = IdType.AUTO)
     private Long payId;
     /**
      * 关联订单ID     
@@ -34,28 +38,32 @@ public class BookOrderPay extends Model<BookOrderPay> {
      */
     private BigDecimal payAmount;
     /**
-     * 支付完成时间     
+     * 支付完成时间
      */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime payTime;
     /**
      * 退款金额（未退款则为0）     
      */
     private BigDecimal refundAmount;
     /**
-     * 退款时间     
+     * 退款时间
      */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime refundTime;
     /**
-     * 支付记录创建时间     
+     * 支付记录创建时间
      */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime createTime;
     /**
      * 创建者     
      */
     private String creater;
     /**
-     * 支付记录更新时间     
+     * 支付记录更新时间
      */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime updateTime;
     /**
      * 更新者     

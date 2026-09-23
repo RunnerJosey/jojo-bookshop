@@ -1,7 +1,10 @@
 package com.book.entity;
 
 import java.time.LocalDateTime;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import java.io.Serializable;
 
 /**
@@ -13,8 +16,9 @@ import java.io.Serializable;
 @SuppressWarnings("serial")
 public class BookUserAddress extends Model<BookUserAddress> {
     /**
-     * 地址ID（主键，规则：时间戳+随机数）     
+     * 地址ID（主键，规则：时间戳+随机数）
      */
+    @TableId(value = "address_id", type = IdType.AUTO)
     private Long addressId;
     /**
      * 关联用户ID（外键，关联用户表）     
@@ -53,12 +57,14 @@ public class BookUserAddress extends Model<BookUserAddress> {
      */
     private Integer isDefault;
     /**
-     * 创建时间     
+     * 创建时间
      */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime createTime;
     /**
-     * 更新时间     
+     * 更新时间
      */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime updateTime;
     /**
      * 逻辑删除：0-未删除 1-已删除     

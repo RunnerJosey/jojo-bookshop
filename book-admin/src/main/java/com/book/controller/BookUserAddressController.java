@@ -1,7 +1,6 @@
 package com.book.controller;
 
 
-
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.book.entity.BookUserAddress;
@@ -10,9 +9,9 @@ import com.book.utils.HttpRequestUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
-import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.List;
-import org.springframework.web.bind.annotation.*;
+
 import com.book.common.CommonResult;
 import static com.book.common.CommonResult.success;
 import com.book.request.BasePageReq;
@@ -25,25 +24,28 @@ import com.book.request.BasePageReq;
  */
 @RestController
 @RequestMapping("address")
-public class BookUserAddressController  {
+public class BookUserAddressController {
     /**
      * 服务对象
      */
     @Resource
     private BookUserAddressService bookUserAddressService;
+
     @Autowired
     private HttpRequestUtil httpRequestUtil;
 
     /**
-     * 分页查询所有数据
+     * 分页查询当前用户的收货地址
      *
-     * @return 所有数据
+     * @return 地址分页数据
      */
     @GetMapping("selectPage")
     public CommonResult selectAll(BasePageReq req) {
+        Long userId = httpRequestUtil.getCurrentUserInfo().getId();
         Page<BookUserAddress> page = new Page<>(req.getCurrent(), req.getSize());
-        BookUserAddress bookUserAddress= new BookUserAddress ();
-        return success(this.bookUserAddressService.page(page, new QueryWrapper<>(bookUserAddress)));
+        QueryWrapper<BookUserAddress> wrapper = new QueryWrapper<>();
+        wrapper.eq("user_id", userId).orderByDesc("is_default").orderByDesc("create_time");
+        return success(this.bookUserAddressService.page(page, wrapper));
     }
 
     /**
@@ -53,37 +55,42 @@ public class BookUserAddressController  {
      * @return 单条数据
      */
     @GetMapping("getById")
-    public CommonResult selectOne(@PathVariable Long id) {
+    public CommonResult selectOne(@RequestParam("id") Long id) {
         return success(this.bookUserAddressService.getById(id));
     }
 
     /**
-     * 新增数据
+     * 新增收货地址
      *
      * @param bookUserAddress 实体对象
      * @return 新增结果
      */
     @PostMapping("add")
     public CommonResult insert(@RequestBody BookUserAddress bookUserAddress) {
+        LocalDateTime now = LocalDateTime.now();
         bookUserAddress.setUserId(httpRequestUtil.getCurrentUserInfo().getId());
+        bookUserAddress.setCreateTime(now);
+        bookUserAddress.setUpdateTime(now);
+        bookUserAddress.setIsDeleted(0);
         return success(this.bookUserAddressService.save(bookUserAddress));
     }
 
     /**
-     * 修改数据
+     * 修改收货地址
      *
      * @param bookUserAddress 实体对象
      * @return 修改结果
      */
     @PutMapping("update")
     public CommonResult update(@RequestBody BookUserAddress bookUserAddress) {
+        bookUserAddress.setUpdateTime(LocalDateTime.now());
         return success(this.bookUserAddressService.updateById(bookUserAddress));
     }
 
     /**
-     * 删除数据
+     * 删除收货地址
      *
-     * @param idList 主键结合
+     * @param idList 主键集合
      * @return 删除结果
      */
     @DeleteMapping("delete")
@@ -91,4 +98,3 @@ public class BookUserAddressController  {
         return success(this.bookUserAddressService.removeByIds(idList));
     }
 }
-

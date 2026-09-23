@@ -17,6 +17,7 @@ public class DeepSeekServiceImpl implements DeepSeekService {
     @Value("${deepseek.api.key}")
     private String apiKey;
 
+
     @Value("${deepseek.api.url}")
     private String apiUrl;
 

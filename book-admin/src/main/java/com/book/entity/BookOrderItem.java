@@ -2,7 +2,10 @@ package com.book.entity;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import java.io.Serializable;
 
 /**
@@ -14,8 +17,9 @@ import java.io.Serializable;
 @SuppressWarnings("serial")
 public class BookOrderItem extends Model<BookOrderItem> {
     /**
-     * 明细ID（主键）     
+     * 明细ID（主键）
      */
+    @TableId(value = "item_id", type = IdType.AUTO)
     private Long itemId;
     /**
      * 关联订单主表ID     
@@ -46,16 +50,18 @@ public class BookOrderItem extends Model<BookOrderItem> {
      */
     private BigDecimal discount;
     /**
-     * 明细创建时间     
+     * 明细创建时间
      */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime createTime;
     /**
      * 创建人     
      */
     private String creater;
     /**
-     * 更新时间     
+     * 更新时间
      */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime updateTime;
     /**
      * 更新人     
