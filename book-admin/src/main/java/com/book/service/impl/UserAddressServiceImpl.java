@@ -1,9 +1,9 @@
 package com.book.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.book.dao.BookUserAddressDao;
-import com.book.entity.BookUserAddress;
-import com.book.service.BookUserAddressService;
+import com.book.dao.UserAddressDao;
+import com.book.entity.UserAddress;
+import com.book.service.UserAddressService;
 import org.springframework.stereotype.Service;
 
 /**
@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
  * @since 2025-12-08 17:46:05
  */
 @Service("bookUserAddressService")
-public class BookUserAddressServiceImpl extends ServiceImpl<BookUserAddressDao, BookUserAddress> implements BookUserAddressService {
+public class UserAddressServiceImpl extends ServiceImpl<UserAddressDao, UserAddress> implements UserAddressService {
 
 }
-

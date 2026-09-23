@@ -1,7 +1,8 @@
 package com.book.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.book.entity.BookUserAddress;
+import com.book.entity.UserAddress;
+import org.apache.ibatis.annotations.Mapper;
 
 /**
  * 书店用户收货地址表(BookUserAddress)表数据库访问层
@@ -9,7 +10,10 @@ import com.book.entity.BookUserAddress;
  * @author jojo思密达
  * @since 2025-12-08 17:46:05
  */
-public interface BookUserAddressDao extends BaseMapper<BookUserAddress> {
+@Mapper
+public interface UserAddressDao extends BaseMapper<UserAddress> {
+
+
 
 }
 

@@ -47,14 +47,16 @@ CREATE TABLE IF NOT EXISTS `book_order` (
                                             `order_id` bigint NOT NULL AUTO_INCREMENT COMMENT '订单编号（主键，规则：时间戳+随机数，如202512041000001234）',
                                             `user_id` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '下单用户ID（关联用户表user_id）',
     `order_status` tinyint NOT NULL DEFAULT '0' COMMENT '订单状态：0-待付款 1-待发货 2-待收货 3-已完成 4-已取消 5-退款中 6-已退款',
-    `total_amount` decimal(10,2) NOT NULL COMMENT '订单总金额（所有图书金额之和）',
-    `pay_amount` decimal(10,2) NOT NULL COMMENT '实际支付金额（扣除优惠券/满减后）',
+    `cart_item_id` bigint NOT NULL DEFAULT (0) COMMENT '关联的购物车id',
     `discount_amount` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '优惠金额（优惠券+满减等）',
     `freight` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '运费（满额包邮则为0）',
+    `total_amount` decimal(10,2) NOT NULL COMMENT '订单总金额（所有图书金额之和）',
     `pay_type` tinyint DEFAULT NULL COMMENT '支付方式：1-微信 2-支付宝 3-线下支付',
+    `pay_amount` decimal(10,2) DEFAULT NULL COMMENT '实际支付金额（扣除优惠券/满减后）',
     `pay_time` datetime DEFAULT NULL COMMENT '支付时间（未支付则为NULL）',
-    `consignee` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '收货人姓名',
-    `phone` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '收货人电话',
+    `address_id` bigint NOT NULL DEFAULT (0) COMMENT '收货地址id',
+    `consignee_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '收货人姓名',
+    `consignee_phone` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '收货人电话',
     `address` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '收货地址',
     `cancel_reason` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '取消原因（仅状态为4时填写）',
     `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '订单创建时间',
@@ -66,9 +68,13 @@ CREATE TABLE IF NOT EXISTS `book_order` (
     KEY `idx_user_id` (`user_id`) COMMENT '按用户ID查询订单的索引',
     KEY `idx_order_status` (`order_status`) COMMENT '按订单状态筛选的索引',
     KEY `idx_create_time` (`create_time`) COMMENT '按创建时间查询的索引'
-    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='书店订单主表';
+    ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='书店订单主表';
 
--- 正在导出表  bookshop.book_order 的数据：~0 rows (大约)
+-- 正在导出表  bookshop.book_order 的数据：~3 rows (大约)
+INSERT INTO `book_order` (`order_id`, `user_id`, `order_status`, `cart_item_id`, `discount_amount`, `freight`, `total_amount`, `pay_type`, `pay_amount`, `pay_time`, `address_id`, `consignee_name`, `consignee_phone`, `address`, `cancel_reason`, `create_time`, `creater`, `update_time`, `updater`, `is_delete`) VALUES
+                                                                                                                                                                                                                                                                                                                         (1, '2', 0, 0, 0.00, 0.00, 1.00, 1, 1.00, NULL, 2, '蜗牛', '18320187777', '天津市天津市和平区f阿萨', NULL, '2025-12-17 10:22:24', 'admin', '2025-12-17 10:22:24', 'CURRENT_TIMESTAMP', 0),
+                                                                                                                                                                                                                                                                                                                         (2, '2', 0, 0, 0.00, 0.00, 1.00, 1, 1.00, NULL, 2000841492489428994, '小明', '12244443333', '福建省福州市鼓楼区发送', NULL, '2025-12-17 11:07:50', 'admin', '2025-12-17 11:07:50', 'CURRENT_TIMESTAMP', 0),
+                                                                                                                                                                                                                                                                                                                         (3, '2', 0, 2000824113789218817, 0.00, 0.00, 1.00, 1, 1.00, NULL, 2, '蜗牛', '18320187777', '天津市天津市和平区f阿萨', NULL, '2025-12-17 11:13:32', 'admin', '2025-12-17 11:13:32', 'CURRENT_TIMESTAMP', 0);
 
 -- 导出  表 bookshop.book_order_item 结构
 CREATE TABLE IF NOT EXISTS `book_order_item` (
@@ -114,27 +120,34 @@ CREATE TABLE IF NOT EXISTS `book_order_pay` (
 
 -- 正在导出表  bookshop.book_order_pay 的数据：~0 rows (大约)
 
--- 导出  表 bookshop.book_user_address 结构
-CREATE TABLE IF NOT EXISTS `book_user_address` (
-                                                   `address_id` bigint NOT NULL AUTO_INCREMENT COMMENT '地址ID（主键，规则：时间戳+随机数）',
-                                                   `user_id` bigint NOT NULL DEFAULT (0) COMMENT '关联用户ID（外键，关联用户表）',
-    `consignee` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '收货人姓名',
-    `phone` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '收货人手机号（需做脱敏存储，如138****1234）',
-    `province_name` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '省份名称（冗余存储，如广东省）',
-    `city_name` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '城市名称（如广州市）',
-    `district_name` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '区县名称（如天河区）',
-    `detail_address` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '详细地址（如XX街道XX小区XX栋XX单元）',
-    `address_label` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '地址标签（如家庭、公司、学校）',
-    `is_default` tinyint NOT NULL DEFAULT '0' COMMENT '是否默认地址：0-否 1-是（一个用户仅能有一个默认地址）',
-    `create_time` datetime NOT NULL COMMENT '创建时间',
-    `update_time` datetime NOT NULL COMMENT '更新时间',
-    `is_deleted` tinyint NOT NULL DEFAULT '0' COMMENT '逻辑删除：0-未删除 1-已删除',
-    PRIMARY KEY (`address_id`),
-    KEY `idx_user_id` (`user_id`) COMMENT '按用户ID查询地址的索引',
-    KEY `idx_is_default` (`is_default`) COMMENT '查询默认地址的索引'
-    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='书店用户收货地址表';
+-- 导出  表 bookshop.book_order_refund 结构
+CREATE TABLE IF NOT EXISTS `book_order_refund` (
+    `refund_id` varchar(32) NOT NULL COMMENT '退款单ID',
+    `pay_id` varchar(32) NOT NULL COMMENT '关联支付单ID',
+    `order_id` varchar(32) NOT NULL COMMENT '关联订单ID',
+    `refund_amount` decimal(10,2) NOT NULL COMMENT '退款金额',
+    `refund_status` tinyint NOT NULL DEFAULT '0' COMMENT '0-待退款 1-退款中 2-退款成功 3-退款失败',
+    `channel_refund_no` varchar(64) DEFAULT NULL COMMENT '渠道侧退款单号',
+    `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (`refund_id`),
+    KEY `idx_pay_id` (`pay_id`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='书店退款单表';
 
--- 正在导出表  bookshop.book_user_address 的数据：~0 rows (大约)
+-- 正在导出表  bookshop.book_order_refund 的数据：~0 rows (大约)
+
+-- 导出  表 bookshop.book_pay_log 结构
+CREATE TABLE IF NOT EXISTS `book_pay_log` (
+    `log_id` varchar(32) NOT NULL COMMENT '日志ID',
+    `pay_id` varchar(32) NOT NULL COMMENT '支付单ID',
+    `oper_type` varchar(20) NOT NULL COMMENT '操作类型：create_pay、call_channel、callback、query_pay',
+    `content` text NOT NULL COMMENT '操作内容（请求/响应参数）',
+    `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`log_id`),
+    KEY `idx_pay_id` (`pay_id`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='书店支付日志表';
+
+-- 正在导出表  bookshop.book_pay_log 的数据：~0 rows (大约)
 
 -- 导出  表 bookshop.cart_item 结构
 CREATE TABLE IF NOT EXISTS `cart_item` (
@@ -153,12 +166,11 @@ CREATE TABLE IF NOT EXISTS `cart_item` (
     PRIMARY KEY (`id`),
     UNIQUE KEY `uk_user_sku_spec` (`user_id`,`book_id`,`spec_id`) USING BTREE COMMENT '避免重复加购同一商品同一规格',
     KEY `idx_user_id` (`user_id`) COMMENT '用户维度查询索引'
-    ) ENGINE=InnoDB AUTO_INCREMENT=1996474728498409474 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='购物车表';
+    ) ENGINE=InnoDB AUTO_INCREMENT=2000824129865986051 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='购物车表';
 
--- 正在导出表  bookshop.cart_item 的数据：~2 rows (大约)
+-- 正在导出表  bookshop.cart_item 的数据：~1 rows (大约)
 INSERT INTO `cart_item` (`id`, `user_id`, `book_id`, `book_name`, `spec_id`, `spec_name`, `quantity`, `price`, `selected`, `add_time`, `update_time`, `is_deleted`) VALUES
-                                                                                                                                                                        (1996120947361386498, 2, '1', '三国演绎', '1', '默认规格1', 1, 1.00, 0, '2025-12-03 15:34:55', '2025-12-04 15:32:05', 1),
-                                                                                                                                                                        (1996474728498409473, 2, '3', '卖包子的小蘑菇', '1', '默认规格', 1, 1.00, 0, '2025-12-04 15:00:43', '2025-12-04 15:00:43', 1);
+    (2000824129865986050, 2, '8', '今晚打老虎', '1', '默认规格', 2, 1.00, 0, '2025-12-16 15:03:41', '2025-12-16 15:03:41', 1);
 
 -- 导出  表 bookshop.meal 结构
 CREATE TABLE IF NOT EXISTS `meal` (
@@ -253,10 +265,36 @@ CREATE TABLE IF NOT EXISTS `user` (
 -- 正在导出表  bookshop.user 的数据：~5 rows (大约)
 INSERT INTO `user` (`id`, `user_name`, `password`, `sex`, `phone`, `email`, `birthday`, `nick_name`, `memo`, `creater`, `create_time`, `updater`, `update_time`, `is_delete`) VALUES
                                                                                                                                                                                   (1, 'jojo', '', '1', '13820181108', 'oqiaoo@163.com', '1999-1-1', '蜗牛', '呜呜呜', 'josey', '2025-04-15 12:26:11', 'josey', '2025-04-15 12:26:18', '0'),
-                                                                                                                                                                                  (2, 'admin', '$2a$10$WxA0SFIEkpEVYVP6PvD6ruNenucPy0OmvbhJDP6kLv9jExwx3lqke', '1', '18688888888', '123456@163.com', '1990-03-09', 'Jojo', NULL, 'admin', '2025-11-20 09:10:07', NULL, NULL, ''),
-                                                                                                                                                                                  (3, '马克菠萝', '$2a$10$J6TofgSebiL9ucM/.8ydaOE06NW8OO46.pX5Nw3Hdv7J0hb9JYmqi', '1', '13766665555', 'afasfa@163.com', '2025-11-04', 'fasfa', NULL, 'fasdfa', '2025-11-27 11:26:38', NULL, NULL, '0'),
-                                                                                                                                                                                  (1994317952680263682, 'fasdfa', '$2a$10$eBwYLH9ENl7wfSM3M8nLFe1cFZ9bbgQ5uAt1KgwIHsXPIHsW03qHu', '1', '15677773333', 'asdafasfd', '2025-11-05', '放大算法', NULL, 'fasdfa', '2025-11-28 16:10:27', NULL, NULL, '0'),
-                                                                                                                                                                                  (1994322214101516290, 'fasdfasdfas', '$2a$10$E0fXGDw5wtaM5FOZufK4w.tr4ax/HSwesUKJAM4QbWtkPC5mtnjRS', '1', '13244445555', 'fasfa', '2025-11-19', 'fasd', NULL, 'fasdfasdfas', '2025-11-28 16:27:23', NULL, NULL, '0');
+                                                                                                                                                                                  (2, 'admin', '$2a$10$WxA0SFIEkpEVYVP6PvD6ruNenucPy0OmvbhJDP6kLv9jExwx3lqke', '1', '18688888888', '123456@163.com', '1990-03-09', 'jojo', NULL, 'admin', '2025-11-20 09:10:07', NULL, NULL, ''),
+                                                                                                                                                                                  (3, 'jerry', '$2a$10$J6TofgSebiL9ucM/.8ydaOE06NW8OO46.pX5Nw3Hdv7J0hb9JYmqi', '1', '13766665555', 'afasfa@163.com', '2025-11-04', '马可波罗', NULL, 'fasdfa', '2025-11-27 11:26:38', NULL, NULL, '0'),
+                                                                                                                                                                                  (1994317952680263682, 'monkeyGoGO', '$2a$10$eBwYLH9ENl7wfSM3M8nLFe1cFZ9bbgQ5uAt1KgwIHsXPIHsW03qHu', '1', '15677773333', 'asdafasfd', '2025-11-05', '猴赛雷', NULL, 'fasdfa', '2025-11-28 16:10:27', NULL, NULL, '0'),
+                                                                                                                                                                                  (1994322214101516290, 'josey', '$2a$10$E0fXGDw5wtaM5FOZufK4w.tr4ax/HSwesUKJAM4QbWtkPC5mtnjRS', '1', '13244445555', 'fasfa', '2025-11-19', '蜗牛大哥', NULL, 'fasdfasdfas', '2025-11-28 16:27:23', NULL, NULL, '0');
+
+-- 导出  表 bookshop.user_address 结构
+CREATE TABLE IF NOT EXISTS `user_address` (
+                                              `address_id` bigint NOT NULL AUTO_INCREMENT COMMENT '地址ID（主键，规则：时间戳+随机数）',
+                                              `user_id` bigint NOT NULL DEFAULT (0) COMMENT '关联用户ID（外键，关联用户表）',
+    `consignee_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '收货人姓名',
+    `consignee_phone` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '收货人手机号（需做脱敏存储，如138****1234）',
+    `province_name` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '省份名称（冗余存储，如广东省）',
+    `city_name` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '城市名称（如广州市）',
+    `district_name` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '区县名称（如天河区）',
+    `detail_address` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '详细地址（如XX街道XX小区XX栋XX单元）',
+    `address_label` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '地址标签（如家庭、公司、学校）',
+    `is_default` tinyint NOT NULL DEFAULT '0' COMMENT '是否默认地址：0-否 1-是（一个用户仅能有一个默认地址）',
+    `create_time` datetime NOT NULL COMMENT '创建时间',
+    `update_time` datetime NOT NULL COMMENT '更新时间',
+    `is_deleted` tinyint NOT NULL DEFAULT '0' COMMENT '逻辑删除：0-未删除 1-已删除',
+    PRIMARY KEY (`address_id`),
+    KEY `idx_user_id` (`user_id`) COMMENT '按用户ID查询地址的索引',
+    KEY `idx_is_default` (`is_default`) COMMENT '查询默认地址的索引'
+    ) ENGINE=InnoDB AUTO_INCREMENT=2000841492489428995 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='书店用户收货地址表';
+
+-- 正在导出表  bookshop.user_address 的数据：~3 rows (大约)
+INSERT INTO `user_address` (`address_id`, `user_id`, `consignee_name`, `consignee_phone`, `province_name`, `city_name`, `district_name`, `detail_address`, `address_label`, `is_default`, `create_time`, `update_time`, `is_deleted`) VALUES
+                                                                                                                                                                                                                                          (2, 2, '蜗牛', '18320187777', '天津市', '天津市', '和平区', 'f阿萨', '11', 1, '2025-12-16 15:42:40', '2025-12-16 15:42:40', 0),
+                                                                                                                                                                                                                                          (2000841360821837825, 2, '蜗牛哥', '18320181107', '广东省', '广州市', '天河区', '员村一横路7号大院', '家', 0, '2025-12-16 16:12:09', '2025-12-16 16:12:09', 0),
+                                                                                                                                                                                                                                          (2000841492489428994, 2, '小明', '12244443333', '福建省', '福州市', '鼓楼区', '发送', '发', 0, '2025-12-16 16:12:40', '2025-12-16 16:12:40', 0);
 
 -- 导出  表 bookshop.user_role 结构
 CREATE TABLE IF NOT EXISTS `user_role` (
@@ -268,10 +306,12 @@ CREATE TABLE IF NOT EXISTS `user_role` (
     CONSTRAINT `user_role_ibfk_2` FOREIGN KEY (`role_id`) REFERENCES `role` (`id`)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='用户角色关联表，关联用户和角色，多对多关系';
 
--- 正在导出表  bookshop.user_role 的数据：~4 rows (大约)
+-- 正在导出表  bookshop.user_role 的数据：~6 rows (大约)
 INSERT INTO `user_role` (`user_id`, `role_id`) VALUES
                                                    (1, 1),
                                                    (2, 1),
+                                                   (1994317952680263682, 1),
+                                                   (1994322214101516290, 1),
                                                    (1, 2),
                                                    (3, 2);
 
