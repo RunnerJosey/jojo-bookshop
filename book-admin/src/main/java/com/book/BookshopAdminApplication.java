@@ -15,7 +15,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class BookshopAdminApplication {
     public static void main(String[] args) {
         SpringApplication.run(BookshopAdminApplication.class,args);
-
-
+log.info("=========启动成功！！===========");
     }
 }

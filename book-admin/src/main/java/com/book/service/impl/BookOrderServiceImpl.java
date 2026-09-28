@@ -6,15 +6,12 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.book.dao.BookOrderDao;
 import com.book.entity.BookOrder;
 import com.book.entity.BookOrderItem;
-import com.book.entity.BookUserAddress;
+import com.book.entity.UserAddress;
 import com.book.entity.CartItem;
 import com.book.enums.BusinessErrorCodeEnum;
 import com.book.exception.BusinessException;
 import com.book.request.BookOrderCreateRequest;
-import com.book.service.BookOrderItemService;
-import com.book.service.BookOrderService;
-import com.book.service.BookUserAddressService;
-import com.book.service.CartItemService;
+import com.book.service.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,7 +37,7 @@ public class BookOrderServiceImpl extends ServiceImpl<BookOrderDao, BookOrder> i
     private BookOrderItemService bookOrderItemService;
 
     @Resource
-    private BookUserAddressService bookUserAddressService;
+    private UserAddressService bookUserAddressService;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -61,7 +58,7 @@ public class BookOrderServiceImpl extends ServiceImpl<BookOrderDao, BookOrder> i
         }
 
         // 2. 查询并校验收货地址归属
-        BookUserAddress address = bookUserAddressService.getById(request.getAddressId());
+        UserAddress address = bookUserAddressService.getById(request.getAddressId());
         if (address == null || !userId.equals(address.getUserId())) {
             throw new BusinessException(BusinessErrorCodeEnum.VALIDATE_FAILED.getCode(), "收货地址不存在");
         }
@@ -81,6 +78,7 @@ public class BookOrderServiceImpl extends ServiceImpl<BookOrderDao, BookOrder> i
         order.setFreight(BigDecimal.ZERO);
         order.setPayAmount(totalAmount);
         order.setPayType(request.getPayType() == null ? 1 : request.getPayType());
+        order.setAddressId(address.getAddressId());
         order.setConsignee(address.getConsignee());
         order.setPhone(address.getPhone());
         order.setAddress(buildFullAddress(address));
@@ -115,7 +113,7 @@ public class BookOrderServiceImpl extends ServiceImpl<BookOrderDao, BookOrder> i
     /**
      * 拼接完整收货地址（省 + 市 + 区县 + 详细地址）
      */
-    private String buildFullAddress(BookUserAddress address) {
+    private String buildFullAddress(UserAddress address) {
         StringBuilder sb = new StringBuilder();
         if (address.getProvinceName() != null) {
             sb.append(address.getProvinceName());

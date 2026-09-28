@@ -2,10 +2,10 @@ package com.book.entity;
 
 import java.time.LocalDateTime;
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import java.io.Serializable;
 
 /**
  * 书店用户收货地址表(BookUserAddress)表实体类
@@ -14,7 +14,7 @@ import java.io.Serializable;
  * @since 2025-12-08 17:46:05
  */
 @SuppressWarnings("serial")
-public class BookUserAddress extends Model<BookUserAddress> {
+public class UserAddress extends Model<UserAddress> {
     /**
      * 地址ID（主键，规则：时间戳+随机数）
      */
@@ -25,12 +25,14 @@ public class BookUserAddress extends Model<BookUserAddress> {
      */
     private Long userId;
     /**
-     * 收货人姓名     
+     * 收货人姓名
      */
+    @TableField("consignee_name")
     private String consignee;
     /**
-     * 收货人手机号（需做脱敏存储，如138****1234）     
+     * 收货人手机号（需做脱敏存储，如138****1234）
      */
+    @TableField("consignee_phone")
     private String phone;
     /**
      * 省份名称（冗余存储，如广东省）     

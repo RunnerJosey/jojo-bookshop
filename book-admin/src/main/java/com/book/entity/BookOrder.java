@@ -3,6 +3,7 @@ package com.book.entity;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -30,7 +31,12 @@ public class BookOrder extends Model<BookOrder> {
      */
     private Integer orderStatus;
     /**
-     * 订单总金额（所有图书金额之和）     
+     * 关联的购物车id
+     */
+    @TableField("cart_item_id")
+    private Long cartItemId;
+    /**
+     * 订单总金额（所有图书金额之和）
      */
     private BigDecimal totalAmount;
     /**
@@ -55,12 +61,19 @@ public class BookOrder extends Model<BookOrder> {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime payTime;
     /**
-     * 收货人姓名     
+     * 收货地址id
      */
+    @TableField("address_id")
+    private Long addressId;
+    /**
+     * 收货人姓名
+     */
+    @TableField("consignee_name")
     private String consignee;
     /**
-     * 收货人电话     
+     * 收货人电话
      */
+    @TableField("consignee_phone")
     private String phone;
     /**
      * 收货地址     
@@ -118,6 +131,14 @@ public class BookOrder extends Model<BookOrder> {
         this.orderStatus = orderStatus;
     }
 
+    public Long getCartItemId() {
+        return cartItemId;
+    }
+
+    public void setCartItemId(Long cartItemId) {
+        this.cartItemId = cartItemId;
+    }
+
     public BigDecimal getTotalAmount() {
         return totalAmount;
     }
@@ -164,6 +185,14 @@ public class BookOrder extends Model<BookOrder> {
 
     public void setPayTime(LocalDateTime payTime) {
         this.payTime = payTime;
+    }
+
+    public Long getAddressId() {
+        return addressId;
+    }
+
+    public void setAddressId(Long addressId) {
+        this.addressId = addressId;
     }
 
     public String getConsignee() {
